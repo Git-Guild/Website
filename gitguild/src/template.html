@@ -1,0 +1,194 @@
+<!-- Page shell: section markup with placeholders filled by tools/build/build_site.py. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Git Guild — Developer Collective</title>
+<meta name="description" content="Git Guild is a developer collective. Twelve open-source projects wired into one network — click a node in the mark to open a project.">
+<meta name="theme-color" content="#0A0D11">
+<link rel="icon" href="__FAVICON__">
+<style>
+__STYLES__
+</style>
+</head>
+<body>
+
+<div class="progress" aria-hidden="true"><span class="progress__bar"></span></div>
+
+__MARK_SYMBOL__
+
+<header class="nav" id="nav">
+  <a class="nav__brand" href="#top" aria-label="Git Guild, home">
+    <svg class="mark mark--nav" viewBox="__VIEW__" aria-hidden="true"><use href="#guild-mark"></use></svg>
+    <span class="nav__wordmark">GIT&nbsp;GUILD</span>
+  </a>
+  <nav class="nav__links" id="navlinks" aria-label="Sections">
+    <a href="#work">Work</a>
+    <a href="#manifesto">Manifesto</a>
+    <a href="#join">Join</a>
+  </nav>
+  <a class="btn btn--ghost nav__cta" href="__GITHUB__" target="_blank" rel="noopener">GitHub&nbsp;<span aria-hidden="true">↗</span></a>
+  <button class="nav__menu" data-menu aria-expanded="false" aria-controls="navlinks" aria-label="Menu"><span></span><span></span></button>
+</header>
+
+<main id="top">
+
+  <section class="hero" aria-labelledby="hero-title">
+  <div class="hero__glow" aria-hidden="true"></div>
+  <p class="eyebrow reveal">
+    <span class="eyebrow__dot" aria-hidden="true"></span>
+    EST. <span data-bind="since">2021</span> · OPEN SOURCE · <span data-bind="count">12</span> NODES
+  </p>
+
+  <div class="stage reveal" id="stage">
+    <svg id="emblem" class="emblem" role="group" aria-label="Project network: 12 interactive project nodes"></svg>
+    <div class="tip" id="tip" role="tooltip" aria-hidden="false"></div>
+  </div>
+
+  <h1 class="wordmark reveal" id="hero-title">GIT GUILD</h1>
+  <p class="subword reveal">Developer Collective</p>
+  <p class="lede reveal">__LEDE__</p>
+  <p class="hint reveal">
+    <span class="hint__key">Hover</span> a node to light up its wiring ·
+    <span class="hint__key">Click</span> to open the project ·
+    <span class="hint__key">Tab</span> to travel the network
+  </p>
+  <div class="hero__cta reveal">
+    <a class="btn btn--primary" href="#work">Browse all <span data-bind="count">12</span> projects</a>
+    <a class="btn btn--ghost" href="__GITHUB__" target="_blank" rel="noopener">Star on GitHub <span aria-hidden="true">↗</span></a>
+  </div>
+</section>
+
+<section class="section" id="work" aria-labelledby="work-title">
+  <div class="section__head reveal">
+    <h2 class="section__title" id="work-title"><span class="slash" aria-hidden="true">//</span> The network</h2>
+    <p class="section__sub">
+      Every trace in the mark is a real dependency — tools that share code, telemetry and release plumbing.
+      Pick a card, or go back up and click the node it belongs to.
+    </p>
+  </div>
+  <ul class="cards" id="cards"></ul>
+</section>
+
+<section class="band" aria-labelledby="train-title">
+  <div class="band__head reveal">
+    <h2 class="section__title" id="train-title"><span class="slash" aria-hidden="true">//</span> Merge train</h2>
+    <p class="section__sub">The last six projects that landed on <code>main</code>, oldest to newest. Hover a commit to light up the node it lives on.</p>
+  </div>
+  <div class="band__scroll">
+    <svg class="train" id="train" viewBox="0 0 1200 180" role="img"
+         aria-label="Commit graph: recent merges to main, oldest to newest"></svg>
+  </div>
+</section>
+
+<section class="section section--tight" id="manifesto" aria-labelledby="man-title">
+  <div class="section__head reveal">
+    <h2 class="section__title" id="man-title"><span class="slash" aria-hidden="true">//</span> Manifesto</h2>
+    <p class="section__sub">Three rules we keep coming back to. They are not aspirational — they are how the work gets merged.</p>
+  </div>
+  <ol class="principles">
+    <li class="principle reveal">
+      <span class="principle__no">01</span>
+      <h3>Build in the open</h3>
+      <p>Every project here is public, from the first commit. Issues, roadmaps and the boring internal notes live where anyone can read them.</p>
+    </li>
+    <li class="principle reveal">
+      <span class="principle__no">02</span>
+      <h3>Small tools, sharp edges</h3>
+      <p>One problem, solved completely. We would rather ship a focused tool that composes than a platform that swallows everything.</p>
+    </li>
+    <li class="principle reveal">
+      <span class="principle__no">03</span>
+      <h3>Ship weekly, document daily</h3>
+      <p>Momentum over perfection. If a decision is not written down next to the code, it does not exist.</p>
+    </li>
+  </ol>
+</section>
+
+<section class="section" id="join" aria-labelledby="join-title">
+  <div class="join reveal">
+    <div class="join__copy">
+      <h2 class="section__title" id="join-title"><span class="slash" aria-hidden="true">//</span> Fork, patch, ship</h2>
+      <p class="section__sub">
+        The collective is <span data-bind="count">12</span> repositories and a small group of maintainers.
+        Grab the CLI, take an open issue, and open a pull request — that is the whole application process.
+      </p>
+      <div class="join__actions">
+        <a class="btn btn--primary" href="__GITHUB__" target="_blank" rel="noopener">Open the org <span aria-hidden="true">↗</span></a>
+        <a class="btn btn--ghost" href="__CHAT__" target="_blank" rel="noopener">Say hello in chat</a>
+      </div>
+    </div>
+    <div class="join__side">
+      <button class="copy" data-copy="__QUICKSTART__" aria-label="Copy install command">
+        <span class="copy__prompt" aria-hidden="true">$</span>
+        <code>__QUICKSTART__</code>
+        <span class="copy__label">copy</span>
+      </button>
+      <dl class="stats">
+        <div><dt>Projects</dt><dd data-bind="count">12</dd></div>
+        <div><dt>Traces in the mark</dt><dd data-bind="tracecount">22</dd></div>
+        <div><dt>Technologies</dt><dd data-bind="techcount">20+</dd></div>
+        <div><dt>Building since</dt><dd data-bind="since">2021</dd></div>
+      </dl>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <svg class="mark mark--foot" viewBox="__VIEW__" aria-hidden="true"><use href="#guild-mark"></use></svg>
+  <p class="footer__name">GIT GUILD · <span data-bind="count">12</span> PROJECTS</p>
+  <nav class="footer__links" aria-label="Footer">
+    <a href="#work">Work</a><a href="#manifesto">Manifesto</a><a href="#join">Join</a>
+    <a href="__GITHUB__" target="_blank" rel="noopener">GitHub</a><a href="__MAIL__">Contact</a>
+  </nav>
+  <p class="footer__note">Built in the open by the Guild. <span aria-hidden="true">◉</span> All projects MIT licensed unless noted.</p>
+</footer>
+
+<aside class="panel" id="panel" aria-hidden="true">
+  <div class="panel__sheet" role="dialog" aria-modal="true" aria-labelledby="p-name" tabindex="-1">
+    <button class="panel__close" data-close aria-label="Close project">Close<span aria-hidden="true">✕</span><kbd>esc</kbd></button>
+
+    <div class="panel__head">
+      <span class="panel__swatch" data-bind="swatch" aria-hidden="true"></span>
+      <span class="panel__idx" data-bind="idx">Node 01 / 12</span>
+    </div>
+
+    <h2 class="panel__name" id="p-name" data-bind="name">Project</h2>
+    <p class="panel__tagline" data-bind="tagline"></p>
+    <p class="panel__blurb" data-bind="blurb"></p>
+
+    <ul class="chips" data-bind="stack"></ul>
+
+    <dl class="panel__meta">
+      <div><dt>Year</dt><dd data-bind="year">—</dd></div>
+      <div><dt>Status</dt><dd class="status" data-bind="status" data-status="stable">stable</dd></div>
+    </dl>
+
+    <div class="panel__actions">
+      <a class="btn btn--primary" data-bind="visit" href="#" target="_blank" rel="noopener">Visit project <span aria-hidden="true">↗</span></a>
+      <a class="btn btn--ghost" data-bind="repo" href="#" target="_blank" rel="noopener" hidden>Source</a>
+      <a class="btn btn--ghost" data-bind="docs" href="#" target="_blank" rel="noopener" hidden>Docs</a>
+    </div>
+
+    <div class="panel__nav">
+      <button class="panel__step" data-bind="prev" aria-label="Previous project"><span aria-hidden="true">←</span> Prev</button>
+      <span class="panel__pos" data-bind="pos">01 / 12</span>
+      <button class="panel__step" data-bind="next" aria-label="Next project">Next <span aria-hidden="true">→</span></button>
+    </div>
+  </div>
+</aside>
+
+<script>
+__PROJECTS__
+</script>
+<script>
+__GEOMETRY__
+</script>
+<script>
+__APP__
+</script>
+</body>
+</html>
