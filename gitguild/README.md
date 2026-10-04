@@ -65,11 +65,13 @@ projects: {
 In `src/app.js` (or override in `projects.js`):
 
 ```js
-nodeClick: 'panel'   // default — opens the info panel with its links
-nodeClick: 'direct'  // jumps straight to the project URL
+nodeClick: 'page'    // default — spark, then navigate to projects/<slug>.html
+nodeClick: 'panel'   // opens the quick-view panel instead of navigating
 ```
 
-Power users can always open a project immediately with <kbd>⌘/Ctrl</kbd>+click.
+Clicking a node, card, or merge-train commit navigates to that project's
+shareable page. Each card also has a `Quick view` button that opens the info
+panel without leaving home; the panel links out to the full project page.
 
 ### Rebuild after editing
 
@@ -142,7 +144,17 @@ No build step runs on the host; `index.html` is already final.
 
 ## 5. Adding a 13th project
 
-The mark has twelve nodes, so a new project either replaces an existing node or
-joins as a card-only entry (add it to `projects` and `order` but leave
-`mergeTrain` alone). If you want a real 13th node in the mark, trace the modified
+The mark has twelve slots (`order[:12]`; keep flagship/`featured` projects at
+the front of `order`). A new project joins as a card-only entry: add it to
+`projects` and append it to `order` (leave `mergeTrain` alone), then rebuild —
+it gets a card plus a `projects/<slug>.html` page with a "card only" note and
+no ring. If you want a real 13th node in the mark, trace the modified
 artwork through the scripts in `tools/logo/` and `tools/build/` and add the node id to `order`.
+
+```bash
+python3 tools/build/build_site.py     # regenerates index.html + projects/ + legal/
+python3 tools/qa/qa_assert.py         # extended browser checks over slots, pages, nav, keyboard, labels
+```
+
+Home renders through the inlined React UMD runtime (`tools/build/vendor-react*.js`,
+no CDN at runtime); project and legal pages are static with a tiny chrome script.
