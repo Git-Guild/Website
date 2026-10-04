@@ -70,6 +70,21 @@ __MARK_SYMBOL__
       Pick a card, or go back up and click the node it belongs to.
     </p>
   </div>
+  <div class="filter-bar reveal" id="filter-bar">
+    <div class="filter-bar__search">
+      <span class="filter-bar__icon" aria-hidden="true">🔍</span>
+      <input type="text" id="project-search" placeholder="Search projects or stack (e.g. Rust, Go, TypeScript)..." aria-label="Search projects">
+    </div>
+    <div class="filter-bar__tags" id="filter-tags">
+      <button class="chip is-active" data-filter="all">All</button>
+      <button class="chip" data-filter="TypeScript">TypeScript</button>
+      <button class="chip" data-filter="Rust">Rust</button>
+      <button class="chip" data-filter="Go">Go</button>
+      <button class="chip" data-filter="React">React</button>
+      <button class="chip" data-filter="Python">Python</button>
+      <button class="chip" data-filter="Terraform">Terraform</button>
+    </div>
+  </div>
   <ul class="cards" id="cards"></ul>
 </section>
 

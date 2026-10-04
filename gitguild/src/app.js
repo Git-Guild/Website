@@ -503,6 +503,58 @@
     tip.style.marginLeft = shift + 'px';
     tip.style.marginTop = vshift + 'px';
   }
+  function initFilterBar() {
+    var input = document.getElementById('project-search');
+    var tagsContainer = document.getElementById('filter-tags');
+    var activeFilter = 'all';
+
+    function applyFilter() {
+      var query = (input ? input.value : '').trim().toLowerCase();
+      ORDER.forEach(function (id) {
+        var p = PROJECTS[id] || {};
+        var cEl = document.querySelector('.card[data-id="' + id + '"]');
+        var nameMatch = (p.name || '').toLowerCase().indexOf(query) !== -1;
+        var tagMatch = (p.tagline || '').toLowerCase().indexOf(query) !== -1;
+        var stackMatch = (p.stack || []).some(function (s) { return s.toLowerCase().indexOf(query) !== -1; });
+        var matchesSearch = !query || nameMatch || tagMatch || stackMatch;
+
+        var matchesTag = activeFilter === 'all' || (p.stack || []).some(function (s) { return s.toLowerCase() === activeFilter.toLowerCase(); });
+
+        var visible = matchesSearch && matchesTag;
+
+        if (cEl) {
+          var cell = cEl.closest('.card-cell') || cEl;
+          cell.style.display = visible ? '' : 'none';
+        }
+
+        var nEl = document.querySelector('.node[data-id="' + id + '"]');
+        if (nEl) {
+          if (visible) {
+            nEl.classList.remove('is-dimmed');
+            nEl.style.opacity = '';
+          } else {
+            nEl.classList.add('is-dimmed');
+            nEl.style.opacity = '0.2';
+          }
+        }
+      });
+    }
+
+    if (input) {
+      input.addEventListener('input', applyFilter);
+    }
+
+    if (tagsContainer) {
+      tagsContainer.addEventListener('click', function (ev) {
+        var btn = ev.target.closest('button[data-filter]');
+        if (!btn) return;
+        tagsContainer.querySelectorAll('button[data-filter]').forEach(function (b) { b.classList.remove('is-active'); });
+        btn.classList.add('is-active');
+        activeFilter = btn.dataset.filter;
+        applyFilter();
+      });
+    }
+  }
 
   function chrome() {
     document.querySelectorAll('[data-bind="since"]').forEach(function (el) {
@@ -575,6 +627,7 @@
       }
     });
 
+    initFilterBar();
     svgDimSync();
   }
 
