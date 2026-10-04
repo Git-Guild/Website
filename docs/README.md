@@ -1,5 +1,8 @@
 # Documentation
 
+> **New here?** Read [HOW-IT-WAS-BUILT.md](HOW-IT-WAS-BUILT.md) first — the whole
+> story in plain language, written so you can explain it to others.
+
 How this repository works, end to end.
 
 The repo contains one static site (**Git Guild**), the logo artwork it is built
@@ -9,6 +12,7 @@ HTML file.
 
 | Doc | Covers |
 |---|---|
+| [HOW-IT-WAS-BUILT.md](HOW-IT-WAS-BUILT.md) | The full story in plain language — start here |
 | [design/README.md](design/README.md) | Artwork → vector geometry (`design/`, `tools/logo/`) |
 | [build/README.md](build/README.md) | Sources → `index.html` (`gitguild/`, `tools/build/`) |
 | [qa/README.md](qa/README.md) | Browser checks and screenshots (`tools/qa/`) |

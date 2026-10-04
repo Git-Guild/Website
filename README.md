@@ -43,6 +43,7 @@ Full detail on editing projects, the emblem and accessibility lives in
 
 ## Documentation
 
+* [`docs/HOW-IT-WAS-BUILT.md`](docs/HOW-IT-WAS-BUILT.md) — the whole story in plain language
 * [`docs/README.md`](docs/README.md) — the pipeline, repo map and conventions
 * [`docs/design/README.md`](docs/design/README.md) — artwork → vector geometry
 * [`docs/build/README.md`](docs/build/README.md) — sources → `index.html`
