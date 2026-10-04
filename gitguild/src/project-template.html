@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>__TITLE__ — Git Guild</title>
+<meta name="description" content="__DESCRIPTION__">
+<meta name="theme-color" content="#0A0D11">
+<link rel="icon" href="__FAVICON__">
+<style>
+__STYLES__
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"><span class="progress__bar"></span></div>
+__MARK_SYMBOL__
+<header class="nav" id="nav">
+  <a class="nav__brand" href="__HOME__#top" aria-label="Git Guild, home">
+    <svg class="mark mark--nav" viewBox="__VIEW__" aria-hidden="true"><use href="#guild-mark"></use></svg>
+    <span class="nav__wordmark">GIT&nbsp;GUILD</span>
+  </a>
+  <nav class="nav__links" id="navlinks" aria-label="Sections">
+    <a href="__HOME__#work">Projects</a>
+    <a href="__HOME__#merge-train">Merge train</a>
+    <a href="__HOME__#manifesto">Manifesto</a>
+    <a href="__DOCS__" target="_blank" rel="noopener">Docs</a>
+    <a href="__HOME__#join">Join</a>
+  </nav>
+  <a class="btn btn--ghost nav__cta" href="__GITHUB__" target="_blank" rel="noopener">GitHub&nbsp;<span aria-hidden="true">↗</span></a>
+  <button class="nav__menu" data-menu aria-expanded="false" aria-controls="navlinks" aria-label="Menu"><span></span><span></span></button>
+</header>
+<main id="top" class="page">
+__CONTENT__
+</main>
+<footer class="footer">
+  <svg class="mark mark--foot" viewBox="__VIEW__" aria-hidden="true"><use href="#guild-mark"></use></svg>
+  <p class="footer__name">GIT GUILD · __COUNT__ PROJECTS</p>
+  <div class="footer__grid">
+    <div class="footer__group">
+      <h3 class="footer__heading">Git Guild</h3>
+      <p class="footer__blurb">Twelve open-source tools wired into one network.</p>
+      <a class="btn btn--ghost footer__cta" href="__GITHUB__" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a>
+    </div>
+    <nav class="footer__group" aria-label="Explore">
+      <h3 class="footer__heading">Explore</h3>
+      <a href="__HOME__#work">Projects</a>
+      <a href="__HOME__#merge-train">Merge train</a>
+      <a href="__HOME__#manifesto">Manifesto</a>
+      <a href="__HOME__#join">Join</a>
+    </nav>
+    <nav class="footer__group" aria-label="Collective">
+      <h3 class="footer__heading">Collective</h3>
+      <a href="__GITHUB__" target="_blank" rel="noopener">GitHub org</a>
+      <a href="__CHAT__" target="_blank" rel="noopener">Community chat</a>
+      <a href="__MAIL__">Contact</a>
+      <a href="__GOODFIRST__" target="_blank" rel="noopener">Good-first-issues</a>
+    </nav>
+    <nav class="footer__group" aria-label="Legal">
+      <h3 class="footer__heading">Legal</h3>
+      <a href="__LEGALBASE__privacy.html">Privacy</a>
+      <a href="__LEGALBASE__terms.html">Terms</a>
+      <a href="__LEGALBASE__license.html">License</a>
+      <a href="__LEGALBASE__security.html">Security</a>
+    </nav>
+  </div>
+  <div class="footer__bar">
+    <span>© __YEAR__ Git Guild</span>
+    <span>All projects MIT licensed unless noted.</span>
+    <span>Built in the open. <span aria-hidden="true">◉</span></span>
+    <a href="#top" data-to-top>Back to top ↑</a>
+  </div>
+</footer>
+<script>
+(function () {
+  'use strict';
+  var nav = document.getElementById('nav');
+  var bar = document.querySelector('.progress__bar');
+  function onScroll() {
+    var sc = window.scrollY || document.documentElement.scrollTop;
+    if (nav) nav.classList.toggle('is-stuck', sc > 12);
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    if (bar) bar.style.transform = 'scaleX(' + (h > 0 ? sc / h : 0) + ')';
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+  var menu = document.querySelector('[data-menu]');
+  if (menu) {
+    menu.addEventListener('click', function () {
+      var open = document.body.classList.toggle('menu-open');
+      menu.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+  }
+})();
+</script>
+</body>
+</html>

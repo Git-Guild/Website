@@ -8,7 +8,9 @@ window.GUILD = {
     links: {
       github: 'https://github.com/',
       chat: 'https://discord.com/',
-      mail: 'mailto:hello@gitguild.dev'
+      mail: 'mailto:hello@gitguild.dev',
+      docs: 'https://github.com/',
+      goodFirstIssues: 'https://github.com/search?q=good-first-issue&type=issues'
     },
     quickstart: 'npx @gitguild/cli open <project>'
   },
@@ -112,7 +114,7 @@ window.GUILD = {
     }
   },
 
-  nodeClickBehavior: 'panel',
+  nodeClickBehavior: 'page',
 
   mergeTrain: ['n11', 'n9', 'n6', 'n1', 'n5', 'n0'],
 
