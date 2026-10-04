@@ -231,6 +231,28 @@ main,header,footer,.panel{position:relative;z-index:1}
 .slash{color:var(--amber);margin-right:.5em;letter-spacing:0}
 .section__sub{margin:14px 0 0;color:var(--muted);max-width:62ch}
 
+/* filter bar */
+.filter-bar{
+  display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;
+  margin-bottom:28px;padding:14px 18px;border:1px solid var(--line-2);border-radius:var(--r);
+  background:rgba(17,24,35,.5);backdrop-filter:blur(6px);
+}
+.filter-bar__search{display:flex;align-items:center;gap:10px;flex:1;min-width:240px}
+.filter-bar__icon{color:var(--muted);font-size:14px}
+#project-search{
+  width:100%;background:transparent;border:none;outline:none;
+  color:var(--bone);font-family:var(--sans);font-size:14px;
+}
+#project-search::placeholder{color:var(--muted)}
+.filter-bar__tags{display:flex;flex-wrap:wrap;gap:8px}
+.chip{
+  background:transparent;border:1px solid var(--line-2);border-radius:100px;
+  color:var(--bone-dim);font-family:var(--mono);font-size:11px;letter-spacing:.08em;
+  padding:4px 12px;cursor:pointer;transition:all .2s ease;
+}
+.chip:hover{border-color:var(--amber);color:var(--bone)}
+.chip.is-active{background:var(--amber);border-color:var(--amber);color:#0A0D11;font-weight:700}
+
 /* cards */
 .cards{
   list-style:none;margin:0;padding:0;display:grid;gap:14px;
@@ -446,47 +468,47 @@ main,header,footer,.panel{position:relative;z-index:1}
 
 <div class="progress" aria-hidden="true"><span class="progress__bar"></span></div>
 
-<svg class="defs" width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute">
-<symbol id="guild-mark" viewBox="465.5 81.8 476.0 476.0">
-<g fill="none" stroke="#EBE8DB" stroke-width="9.6" stroke-linecap="round" stroke-linejoin="round">
-<path d="M703.8,209.7L703.6,483.9"/>
-<path d="M701.7,319.7L648.1,276.1"/>
-<path d="M853.5,217.3L720.6,144.3"/>
-<path d="M705.7,409.7C713.5,404.8 742.1,389.4 752.7,380.3C763.3,371.2 766.5,359.5 769.3,355.3"/>
-<path d="M685.3,498.0L552.5,423.2"/>
-<path d="M721.5,498.4L854.4,423.3"/>
-</g>
-<g fill="none" stroke="#F4A330" stroke-width="9.6" stroke-linecap="round" stroke-linejoin="round">
-<path d="M577.7,253.7C577.1,258.5 573.1,273.7 574.3,282.3C575.5,290.9 582.9,301.5 584.7,305.4"/>
-<path d="M582.6,331.1C581.3,334.3 576.4,343.6 574.7,350.7C573.0,357.8 572.7,369.9 572.3,373.7"/>
-<path d="M744.0,193.7C744.3,194.5 733.6,190.5 745.7,198.3C757.8,206.1 804.9,233.3 816.7,240.3"/>
-<path d="M615.6,318.9C619.8,322.0 633.1,317.3 640.7,337.7C648.3,358.1 654.6,421.2 661.0,441.3C667.4,461.4 676.0,455.5 679.0,458.3"/>
-<path d="M553.7,217.7C570.2,208.4 634.4,171.4 652.7,161.7C671.0,152.0 657.7,162.2 663.3,159.3C668.9,156.4 682.6,147.0 686.5,144.5"/>
-<path d="M538.2,393.1L538.5,337.9"/>
-<path d="M538.5,246.2L538.0,300.7"/>
-<path d="M766.9,277.7C767.2,286.1 769.0,316.1 768.7,328.0C768.4,339.9 765.9,345.5 765.3,349.0"/>
-<path d="M592.0,404.3C601.5,410.0 637.3,432.1 648.7,438.3C660.2,444.5 658.7,441.1 660.7,441.7"/>
-<path d="M872.8,301.2C872.3,299.4 870.2,299.9 869.7,290.7C869.2,281.5 869.7,253.5 869.7,246.1"/>
-<path d="M728.0,459.3C728.8,458.2 718.9,461.2 732.7,452.7C746.5,444.2 795.3,418.9 810.7,408.3C826.1,397.7 822.9,392.2 825.3,389.0"/>
-<path d="M834.7,341.0C834.5,345.8 834.4,362.0 833.3,370.0C832.2,378.0 824.7,383.6 828.0,389.0C831.3,394.4 848.9,400.3 853.0,402.5"/>
-<path d="M869.7,338.0L869.5,393.3"/>
-<path d="M769.0,326.7C774.7,323.2 794.1,316.5 803.3,305.7C812.5,294.9 816.2,273.5 824.3,261.7C832.4,249.9 847.5,239.6 852.2,235.2"/>
-<path d="M577.7,253.7C580.5,250.8 580.9,245.6 594.7,236.3C608.5,227.0 648.8,210.3 660.3,197.7C671.8,185.1 663.1,166.9 663.7,160.7"/>
-<path d="M602.4,337.1C603.0,340.9 606.6,353.7 606.3,360.0C606.0,366.3 609.0,367.6 600.3,374.7C591.6,381.8 561.9,398.0 554.2,402.7"/>
-</g>
-<circle cx="703.5" cy="137.0" r="15.75" fill="none" stroke="#EBE8DB" stroke-width="9.5"/>
-<circle cx="703.5" cy="191.1" r="15.75" fill="none" stroke="#EBE8DB" stroke-width="9.5"/>
-<circle cx="538.0" cy="227.6" r="15.75" fill="none" stroke="#F4A330" stroke-width="9.5"/>
-<circle cx="869.1" cy="227.5" r="15.75" fill="none" stroke="#F4A330" stroke-width="9.5"/>
-<circle cx="640.6" cy="259.1" r="15.75" fill="none" stroke="#EBE8DB" stroke-width="9.5"/>
-<circle cx="766.6" cy="259.1" r="15.75" fill="none" stroke="#F4A330" stroke-width="9.5"/>
-<circle cx="538.1" cy="319.3" r="15.75" fill="none" stroke="#F4A330" stroke-width="9.5"/>
-<circle cx="597.0" cy="319.3" r="15.75" fill="none" stroke="#F4A330" stroke-width="9.5"/>
-<circle cx="869.1" cy="319.4" r="15.75" fill="none" stroke="#F4A330" stroke-width="9.5"/>
-<circle cx="537.9" cy="411.7" r="15.75" fill="none" stroke="#F4A330" stroke-width="9.5"/>
-<circle cx="869.1" cy="411.9" r="15.75" fill="none" stroke="#F4A330" stroke-width="9.5"/>
-<circle cx="703.4" cy="502.5" r="15.75" fill="none" stroke="#EBE8DB" stroke-width="9.5"/>
-</symbol>
+<svg style="display:none" aria-hidden="true">
+  <symbol id="guild-mark" viewBox="465.5 81.8 476.0 476.0">
+    <g fill="none" stroke="#EBE8DB" stroke-width="9.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M703.8,209.7L703.6,483.9"/>
+      <path d="M701.7,319.7L648.1,276.1"/>
+      <path d="M853.5,217.3L720.6,144.3"/>
+      <path d="M705.7,409.7C713.5,404.8 742.1,389.4 752.7,380.3C763.3,371.2 766.5,359.5 769.3,355.3"/>
+      <path d="M685.3,498.0L552.5,423.2"/>
+      <path d="M721.5,498.4L854.4,423.3"/>
+    </g>
+    <g fill="none" stroke="#F4A330" stroke-width="9.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M577.7,253.7C577.1,258.5 573.1,273.7 574.3,282.3C575.5,290.9 582.9,301.5 584.7,305.4"/>
+      <path d="M582.6,331.1C581.3,334.3 576.4,343.6 574.7,350.7C573.0,357.8 572.7,369.9 572.3,373.7"/>
+      <path d="M744.0,193.7C744.3,194.5 733.6,190.5 745.7,198.3C757.8,206.1 804.9,233.3 816.7,240.3"/>
+      <path d="M615.6,318.9C619.8,322.0 633.1,317.3 640.7,337.7C648.3,358.1 654.6,421.2 661.0,441.3C667.4,461.4 676.0,455.5 679.0,458.3"/>
+      <path d="M553.7,217.7C570.2,208.4 634.4,171.4 652.7,161.7C671.0,152.0 657.7,162.2 663.3,159.3C668.9,156.4 682.6,147.0 686.5,144.5"/>
+      <path d="M538.2,393.1L538.5,337.9"/>
+      <path d="M538.5,246.2L538.0,300.7"/>
+      <path d="M766.9,277.7C767.2,286.1 769.0,316.1 768.7,328.0C768.4,339.9 765.9,345.5 765.3,349.0"/>
+      <path d="M592.0,404.3C601.5,410.0 637.3,432.1 648.7,438.3C660.2,444.5 658.7,441.1 660.7,441.7"/>
+      <path d="M872.8,301.2C872.3,299.4 870.2,299.9 869.7,290.7C869.2,281.5 869.7,253.5 869.7,246.1"/>
+      <path d="M728.0,459.3C728.8,458.2 718.9,461.2 732.7,452.7C746.5,444.2 795.3,418.9 810.7,408.3C826.1,397.7 822.9,392.2 825.3,389.0"/>
+      <path d="M834.7,341.0C834.5,345.8 834.4,362.0 833.3,370.0C832.2,378.0 824.7,383.6 828.0,389.0C831.3,394.4 848.9,400.3 853.0,402.5"/>
+      <path d="M869.7,338.0L869.5,393.3"/>
+      <path d="M769.0,326.7C774.7,323.2 794.1,316.5 803.3,305.7C812.5,294.9 816.2,273.5 824.3,261.7C832.4,249.9 847.5,239.6 852.2,235.2"/>
+      <path d="M577.7,253.7C580.5,250.8 580.9,245.6 594.7,236.3C608.5,227.0 648.8,210.3 660.3,197.7C671.8,185.1 663.1,166.9 663.7,160.7"/>
+      <path d="M602.4,337.1C603.0,340.9 606.6,353.7 606.3,360.0C606.0,366.3 609.0,367.6 600.3,374.7C591.6,381.8 561.9,398.0 554.2,402.7"/>
+    </g>
+    <circle cx="703.5" cy="137.0" r="15.75" fill="none" stroke="#EBE8DB" stroke-width="9.5"/>
+    <circle cx="703.5" cy="191.1" r="15.75" fill="none" stroke="#EBE8DB" stroke-width="9.5"/>
+    <circle cx="538.0" cy="227.6" r="15.75" fill="none" stroke="#F4A330" stroke-width="9.5"/>
+    <circle cx="869.1" cy="227.5" r="15.75" fill="none" stroke="#F4A330" stroke-width="9.5"/>
+    <circle cx="640.6" cy="259.1" r="15.75" fill="none" stroke="#EBE8DB" stroke-width="9.5"/>
+    <circle cx="766.6" cy="259.1" r="15.75" fill="none" stroke="#F4A330" stroke-width="9.5"/>
+    <circle cx="538.1" cy="319.3" r="15.75" fill="none" stroke="#F4A330" stroke-width="9.5"/>
+    <circle cx="597.0" cy="319.3" r="15.75" fill="none" stroke="#F4A330" stroke-width="9.5"/>
+    <circle cx="869.1" cy="319.4" r="15.75" fill="none" stroke="#F4A330" stroke-width="9.5"/>
+    <circle cx="537.9" cy="411.7" r="15.75" fill="none" stroke="#F4A330" stroke-width="9.5"/>
+    <circle cx="869.1" cy="411.9" r="15.75" fill="none" stroke="#F4A330" stroke-width="9.5"/>
+    <circle cx="703.4" cy="502.5" r="15.75" fill="none" stroke="#EBE8DB" stroke-width="9.5"/>
+  </symbol>
 </svg>
 
 <header class="nav" id="nav">
@@ -499,7 +521,7 @@ main,header,footer,.panel{position:relative;z-index:1}
     <a href="#manifesto">Manifesto</a>
     <a href="#join">Join</a>
   </nav>
-  <a class="btn btn--ghost nav__cta" href="https://github.com/" target="_blank" rel="noopener">GitHub&nbsp;<span aria-hidden="true">↗</span></a>
+  <a class="btn btn--ghost nav__cta" href="https://github.com/gitguild" target="_blank" rel="noopener">GitHub&nbsp;<span aria-hidden="true">↗</span></a>
   <button class="nav__menu" data-menu aria-expanded="false" aria-controls="navlinks" aria-label="Menu"><span></span><span></span></button>
 </header>
 
@@ -527,7 +549,7 @@ main,header,footer,.panel{position:relative;z-index:1}
   </p>
   <div class="hero__cta reveal">
     <a class="btn btn--primary" href="#work">Browse all <span data-bind="count">12</span> projects</a>
-    <a class="btn btn--ghost" href="https://github.com/" target="_blank" rel="noopener">Star on GitHub <span aria-hidden="true">↗</span></a>
+    <a class="btn btn--ghost" href="https://github.com/gitguild" target="_blank" rel="noopener">Star on GitHub <span aria-hidden="true">↗</span></a>
   </div>
 </section>
 
@@ -538,6 +560,21 @@ main,header,footer,.panel{position:relative;z-index:1}
       Every trace in the mark is a real dependency — tools that share code, telemetry and release plumbing.
       Pick a card, or go back up and click the node it belongs to.
     </p>
+  </div>
+  <div class="filter-bar reveal" id="filter-bar">
+    <div class="filter-bar__search">
+      <span class="filter-bar__icon" aria-hidden="true">🔍</span>
+      <input type="text" id="project-search" placeholder="Search projects or stack (e.g. Rust, Go, TypeScript)..." aria-label="Search projects">
+    </div>
+    <div class="filter-bar__tags" id="filter-tags">
+      <button class="chip is-active" data-filter="all">All</button>
+      <button class="chip" data-filter="TypeScript">TypeScript</button>
+      <button class="chip" data-filter="Rust">Rust</button>
+      <button class="chip" data-filter="Go">Go</button>
+      <button class="chip" data-filter="React">React</button>
+      <button class="chip" data-filter="Python">Python</button>
+      <button class="chip" data-filter="Terraform">Terraform</button>
+    </div>
   </div>
   <ul class="cards" id="cards"></ul>
 </section>
@@ -586,14 +623,14 @@ main,header,footer,.panel{position:relative;z-index:1}
         Grab the CLI, take an open issue, and open a pull request — that is the whole application process.
       </p>
       <div class="join__actions">
-        <a class="btn btn--primary" href="https://github.com/" target="_blank" rel="noopener">Open the org <span aria-hidden="true">↗</span></a>
+        <a class="btn btn--primary" href="https://github.com/gitguild" target="_blank" rel="noopener">Open the org <span aria-hidden="true">↗</span></a>
         <a class="btn btn--ghost" href="https://discord.com/" target="_blank" rel="noopener">Say hello in chat</a>
       </div>
     </div>
     <div class="join__side">
-      <button class="copy" data-copy="npx @gitguild/cli open &lt;project&gt;" aria-label="Copy install command">
+      <button class="copy" data-copy="npx @gitguild/cli open <project>" aria-label="Copy install command">
         <span class="copy__prompt" aria-hidden="true">$</span>
-        <code>npx @gitguild/cli open &lt;project&gt;</code>
+        <code>npx @gitguild/cli open <project></code>
         <span class="copy__label">copy</span>
       </button>
       <dl class="stats">
@@ -613,7 +650,7 @@ main,header,footer,.panel{position:relative;z-index:1}
   <p class="footer__name">GIT GUILD · <span data-bind="count">12</span> PROJECTS</p>
   <nav class="footer__links" aria-label="Footer">
     <a href="#work">Work</a><a href="#manifesto">Manifesto</a><a href="#join">Join</a>
-    <a href="https://github.com/" target="_blank" rel="noopener">GitHub</a><a href="mailto:hello@gitguild.dev">Contact</a>
+    <a href="https://github.com/gitguild" target="_blank" rel="noopener">GitHub</a><a href="mailto:hello@gitguild.dev">Contact</a>
   </nav>
   <p class="footer__note">Built in the open by the Guild. <span aria-hidden="true">◉</span> All projects MIT licensed unless noted.</p>
 </footer>
@@ -675,7 +712,7 @@ window.GUILD = {
       blurb: 'Cut a versioned release from any branch in a monorepo with one command. Anchor derives the bump from conventional commits, writes the changelog, tags the commit and runs your publish graph in dependency order.',
       year: 2025, status: 'stable', featured: true,
       stack: ['TypeScript', 'Node', 'GitHub Actions'],
-      url: 'https://github.com/', repo: 'https://github.com/', docs: null
+      url: 'https://github.com/gitguild/anchor', repo: 'https://github.com/gitguild/anchor', docs: null
     },
     n1: {
       name: 'Guild CLI',
@@ -683,7 +720,7 @@ window.GUILD = {
       blurb: 'One binary, twelve plugins. The CLI discovers the rest of the collective on install and exposes each project as a namespaced command, so the whole toolchain is one `guild` away.',
       year: 2025, status: 'stable',
       stack: ['Go', 'Cobra', 'gRPC'],
-      url: 'https://github.com/', repo: 'https://github.com/', docs: 'https://github.com/'
+      url: 'https://github.com/gitguild/cli', repo: 'https://github.com/gitguild/cli', docs: 'https://github.com/gitguild/cli/tree/main/docs'
     },
     n2: {
       name: 'Lattice',
@@ -691,7 +728,7 @@ window.GUILD = {
       blurb: 'Describe a schema once, compose it anywhere. Lattice splits a graph into independently deployable services and stitches them back together at the edge with query-plan caching.',
       year: 2024, status: 'stable',
       stack: ['TypeScript', 'GraphQL', 'Redis'],
-      url: 'https://github.com/', repo: 'https://github.com/', docs: null
+      url: 'https://github.com/gitguild/lattice', repo: 'https://github.com/gitguild/lattice', docs: null
     },
     n3: {
       name: 'Beacon',
@@ -699,7 +736,7 @@ window.GUILD = {
       blurb: 'Streaming traces and structured logs from hundreds of edge locations, sampled intelligently so you keep the requests that matter and drop the noise.',
       year: 2024, status: 'stable',
       stack: ['Rust', 'OpenTelemetry', 'ClickHouse'],
-      url: 'https://github.com/', repo: 'https://github.com/', docs: null
+      url: 'https://github.com/gitguild/beacon', repo: 'https://github.com/gitguild/beacon', docs: null
     },
     n4: {
       name: 'Prism',
@@ -707,7 +744,7 @@ window.GUILD = {
       blurb: 'Renders every component state in a real browser and diffs it against a committed baseline. Fonts, clocks and randomness are frozen, so a failure always means a real visual change.',
       year: 2025, status: 'beta',
       stack: ['TypeScript', 'Playwright', 'Vite'],
-      url: 'https://github.com/', repo: 'https://github.com/', docs: null
+      url: 'https://github.com/gitguild/prism', repo: 'https://github.com/gitguild/prism', docs: null
     },
     n5: {
       name: 'Cinder',
@@ -715,7 +752,7 @@ window.GUILD = {
       blurb: 'Content-addressed builds with per-route budgets. Cinder fails a pull request the moment a bundle crosses its weight budget, and tells you exactly which import did it.',
       year: 2024, status: 'stable',
       stack: ['Rust', 'SWC', 'WASM'],
-      url: 'https://github.com/', repo: 'https://github.com/', docs: null
+      url: 'https://github.com/gitguild/cinder', repo: 'https://github.com/gitguild/cinder', docs: null
     },
     n6: {
       name: 'Warden',
@@ -723,7 +760,7 @@ window.GUILD = {
       blurb: 'Write access rules once in a small declarative language. Warden enforces them in CI, at deploy time and in your cloud account, with a dry-run diff before anything changes.',
       year: 2023, status: 'stable',
       stack: ['Go', 'OPA', 'Terraform'],
-      url: 'https://github.com/', repo: 'https://github.com/', docs: 'https://github.com/'
+      url: 'https://github.com/gitguild/warden', repo: 'https://github.com/gitguild/warden', docs: 'https://github.com/gitguild/warden/tree/main/docs'
     },
     n7: {
       name: 'Loom',
@@ -731,7 +768,7 @@ window.GUILD = {
       blurb: 'Drag a pipeline together, then export the exact YAML your CI already understands. Every graph is diffable, reviewable and versioned like ordinary source.',
       year: 2024, status: 'beta',
       stack: ['React', 'YAML', 'D3'],
-      url: 'https://github.com/', repo: 'https://github.com/', docs: null
+      url: 'https://github.com/gitguild/loom', repo: 'https://github.com/gitguild/loom', docs: null
     },
     n8: {
       name: 'Vector',
@@ -739,7 +776,7 @@ window.GUILD = {
       blurb: 'Point Vector at a spec and get a fully typed client, runtime validation and mock server. Regenerate on every upstream change so client drift stops being a category of bug.',
       year: 2025, status: 'stable',
       stack: ['TypeScript', 'OpenAPI', 'Zod'],
-      url: 'https://github.com/', repo: 'https://github.com/', docs: null
+      url: 'https://github.com/gitguild/vector', repo: 'https://github.com/gitguild/vector', docs: null
     },
     n9: {
       name: 'Kiln',
@@ -747,7 +784,7 @@ window.GUILD = {
       blurb: 'Declare the services, databases and fixtures a task needs. Kiln boots them from a warm content-addressed cache and tears the whole thing down when you are done.',
       year: 2023, status: 'stable',
       stack: ['Rust', 'containerd', 'Nix'],
-      url: 'https://github.com/', repo: 'https://github.com/', docs: null
+      url: 'https://github.com/gitguild/kiln', repo: 'https://github.com/gitguild/kiln', docs: null
     },
     n10: {
       name: 'Ferry',
@@ -755,7 +792,7 @@ window.GUILD = {
       blurb: 'Moves data between shapes safely: expand, backfill, verify, contract. Ferry estimates row counts and lock impact before you approve, and can roll a half-finished migration back.',
       year: 2023, status: 'stable',
       stack: ['Python', 'Postgres', 'SQL'],
-      url: 'https://github.com/', repo: 'https://github.com/', docs: null
+      url: 'https://github.com/gitguild/ferry', repo: 'https://github.com/gitguild/ferry', docs: null
     },
     n11: {
       name: 'Bedrock',
@@ -763,7 +800,7 @@ window.GUILD = {
       blurb: 'The boring, well-tested modules the rest of the collective is built on — networking, identity, queues and deploy plumbing. Composable, documented and versioned.',
       year: 2021, status: 'stable',
       stack: ['Terraform', 'HCL', 'AWS'],
-      url: 'https://github.com/', repo: 'https://github.com/', docs: 'https://github.com/'
+      url: 'https://github.com/gitguild/bedrock', repo: 'https://github.com/gitguild/bedrock', docs: 'https://github.com/gitguild/bedrock/tree/main/docs'
     }
   },
 
@@ -777,13 +814,7 @@ window.GUILD = {
 </script>
 <script>
 /* GENERATED — source: design/logo-final.json, regenerate with tools/build/build_geometry.py */
-window.GUILD_GRID = {
-  view: [465.5, 81.8, 476.0, 476.0],
-  stroke: 9.6, rOut: 20.5, rIn: 11.0,
-  nodes: [{"id": "n0", "x": 703.5, "y": 137.0, "c": "w"}, {"id": "n1", "x": 703.5, "y": 191.1, "c": "w"}, {"id": "n2", "x": 538.0, "y": 227.6, "c": "o"}, {"id": "n3", "x": 869.1, "y": 227.5, "c": "o"}, {"id": "n4", "x": 640.6, "y": 259.1, "c": "w"}, {"id": "n5", "x": 766.6, "y": 259.1, "c": "o"}, {"id": "n6", "x": 538.1, "y": 319.3, "c": "o"}, {"id": "n7", "x": 597.0, "y": 319.3, "c": "o"}, {"id": "n8", "x": 869.1, "y": 319.4, "c": "o"}, {"id": "n9", "x": 537.9, "y": 411.7, "c": "o"}, {"id": "n10", "x": 869.1, "y": 411.9, "c": "o"}, {"id": "n11", "x": 703.4, "y": 502.5, "c": "w"}],
-  traces: [{"i": 0, "c": "w", "d": "M703.8,209.7L703.6,483.9", "a": "n1", "b": "n11", "l": 274.2}, {"i": 1, "c": "w", "d": "M701.7,319.7L648.1,276.1", "a": null, "b": "n4", "l": 69.1}, {"i": 2, "c": "w", "d": "M853.5,217.3L720.6,144.3", "a": "n3", "b": "n0", "l": 151.7}, {"i": 3, "c": "w", "d": "M705.7,409.7C713.5,404.8 742.1,389.4 752.7,380.3C763.3,371.2 766.5,359.5 769.3,355.3", "a": null, "b": null, "l": 85.4}, {"i": 4, "c": "w", "d": "M685.3,498.0L552.5,423.2", "a": "n11", "b": "n9", "l": 152.4}, {"i": 5, "c": "w", "d": "M721.5,498.4L854.4,423.3", "a": "n11", "b": "n10", "l": 152.6}, {"i": 6, "c": "o", "d": "M577.7,253.7C577.1,258.5 573.1,273.7 574.3,282.3C575.5,290.9 582.9,301.5 584.7,305.4", "a": null, "b": "n7", "l": 54.1}, {"i": 7, "c": "o", "d": "M582.6,331.1C581.3,334.3 576.4,343.6 574.7,350.7C573.0,357.8 572.7,369.9 572.3,373.7", "a": "n7", "b": null, "l": 44.3}, {"i": 8, "c": "o", "d": "M744.0,193.7C744.3,194.5 733.6,190.5 745.7,198.3C757.8,206.1 804.9,233.3 816.7,240.3", "a": "n1", "b": null, "l": 87.4}, {"i": 9, "c": "o", "d": "M615.6,318.9C619.8,322.0 633.1,317.3 640.7,337.7C648.3,358.1 654.6,421.2 661.0,441.3C667.4,461.4 676.0,455.5 679.0,458.3", "a": "n7", "b": null, "l": 161.7}, {"i": 10, "c": "o", "d": "M553.7,217.7C570.2,208.4 634.4,171.4 652.7,161.7C671.0,152.0 657.7,162.2 663.3,159.3C668.9,156.4 682.6,147.0 686.5,144.5", "a": "n2", "b": "n0", "l": 152.1}, {"i": 11, "c": "o", "d": "M538.2,393.1L538.5,337.9", "a": "n9", "b": "n6", "l": 55.2}, {"i": 12, "c": "o", "d": "M538.5,246.2L538.0,300.7", "a": "n2", "b": "n6", "l": 54.5}, {"i": 13, "c": "o", "d": "M766.9,277.7C767.2,286.1 769.0,316.1 768.7,328.0C768.4,339.9 765.9,345.5 765.3,349.0", "a": "n5", "b": null, "l": 71.6}, {"i": 14, "c": "o", "d": "M592.0,404.3C601.5,410.0 637.3,432.1 648.7,438.3C660.2,444.5 658.7,441.1 660.7,441.7", "a": null, "b": null, "l": 78.6}, {"i": 15, "c": "o", "d": "M872.8,301.2C872.3,299.4 870.2,299.9 869.7,290.7C869.2,281.5 869.7,253.5 869.7,246.1", "a": "n8", "b": "n3", "l": 55.5}, {"i": 16, "c": "o", "d": "M728.0,459.3C728.8,458.2 718.9,461.2 732.7,452.7C746.5,444.2 795.3,418.9 810.7,408.3C826.1,397.7 822.9,392.2 825.3,389.0", "a": null, "b": null, "l": 122.1}, {"i": 17, "c": "o", "d": "M834.7,341.0C834.5,345.8 834.4,362.0 833.3,370.0C832.2,378.0 824.7,383.6 828.0,389.0C831.3,394.4 848.9,400.3 853.0,402.5", "a": "n8", "b": "n10", "l": 77.2}, {"i": 18, "c": "o", "d": "M869.7,338.0L869.5,393.3", "a": "n8", "b": "n10", "l": 55.3}, {"i": 19, "c": "o", "d": "M769.0,326.7C774.7,323.2 794.1,316.5 803.3,305.7C812.5,294.9 816.2,273.5 824.3,261.7C832.4,249.9 847.5,239.6 852.2,235.2", "a": null, "b": "n3", "l": 127.4}, {"i": 20, "c": "o", "d": "M577.7,253.7C580.5,250.8 580.9,245.6 594.7,236.3C608.5,227.0 648.8,210.3 660.3,197.7C671.8,185.1 663.1,166.9 663.7,160.7", "a": null, "b": null, "l": 137.6}, {"i": 21, "c": "o", "d": "M602.4,337.1C603.0,340.9 606.6,353.7 606.3,360.0C606.0,366.3 609.0,367.6 600.3,374.7C591.6,381.8 561.9,398.0 554.2,402.7", "a": "n7", "b": "n9", "l": 93.1}],
-  adjacency: {"n0": [[2, "b"], [10, "b"]], "n1": [[0, "a"], [8, "a"]], "n2": [[10, "a"], [12, "a"]], "n3": [[2, "a"], [15, "b"], [19, "b"]], "n4": [[1, "b"]], "n5": [[13, "a"]], "n6": [[11, "b"], [12, "b"]], "n7": [[6, "b"], [7, "a"], [9, "a"], [21, "a"]], "n8": [[15, "a"], [17, "a"], [18, "a"]], "n9": [[4, "b"], [11, "a"], [21, "b"]], "n10": [[5, "b"], [17, "b"], [18, "b"]], "n11": [[0, "b"], [4, "a"], [5, "a"]]}
-};
+window.GUILD_GRID = {"view": [465.5,81.8,476.0,476.0],"stroke": 9.6,"rOut": 20.5,"rIn": 11.0,"nodes": [{"id": "n0","x": 703.5,"y": 137.0,"c": "w"},{"id": "n1","x": 703.5,"y": 191.1,"c": "w"},{"id": "n2","x": 538.0,"y": 227.6,"c": "o"},{"id": "n3","x": 869.1,"y": 227.5,"c": "o"},{"id": "n4","x": 640.6,"y": 259.1,"c": "w"},{"id": "n5","x": 766.6,"y": 259.1,"c": "o"},{"id": "n6","x": 538.1,"y": 319.3,"c": "o"},{"id": "n7","x": 597.0,"y": 319.3,"c": "o"},{"id": "n8","x": 869.1,"y": 319.4,"c": "o"},{"id": "n9","x": 537.9,"y": 411.7,"c": "o"},{"id": "n10","x": 869.1,"y": 411.9,"c": "o"},{"id": "n11","x": 703.4,"y": 502.5,"c": "w"}],"traces": [{"i": 0,"c": "w","d": "M703.8,209.7L703.6,483.9","a": "n1","b": "n11","l": 274.2},{"i": 1,"c": "w","d": "M701.7,319.7L648.1,276.1","a": null,"b": "n4","l": 69.1},{"i": 2,"c": "w","d": "M853.5,217.3L720.6,144.3","a": "n3","b": "n0","l": 151.7},{"i": 3,"c": "w","d": "M705.7,409.7C713.5,404.8 742.1,389.4 752.7,380.3C763.3,371.2 766.5,359.5 769.3,355.3","a": null,"b": null,"l": 85.4},{"i": 4,"c": "w","d": "M685.3,498.0L552.5,423.2","a": "n11","b": "n9","l": 152.4},{"i": 5,"c": "w","d": "M721.5,498.4L854.4,423.3","a": "n11","b": "n10","l": 152.6},{"i": 6,"c": "o","d": "M577.7,253.7C577.1,258.5 573.1,273.7 574.3,282.3C575.5,290.9 582.9,301.5 584.7,305.4","a": null,"b": "n7","l": 54.1},{"i": 7,"c": "o","d": "M582.6,331.1C581.3,334.3 576.4,343.6 574.7,350.7C573.0,357.8 572.7,369.9 572.3,373.7","a": "n7","b": null,"l": 44.3},{"i": 8,"c": "o","d": "M744.0,193.7C744.3,194.5 733.6,190.5 745.7,198.3C757.8,206.1 804.9,233.3 816.7,240.3","a": null,"b": null,"l": 87.4},{"i": 9,"c": "o","d": "M615.6,318.9C619.8,322.0 633.1,317.3 640.7,337.7C648.3,358.1 654.6,421.2 661.0,441.3C667.4,461.4 676.0,455.5 679.0,458.3","a": "n7","b": null,"l": 161.7},{"i": 10,"c": "o","d": "M553.7,217.7C570.2,208.4 634.4,171.4 652.7,161.7C671.0,152.0 657.7,162.2 663.3,159.3C668.9,156.4 682.6,147.0 686.5,144.5","a": "n2","b": "n0","l": 152.1},{"i": 11,"c": "o","d": "M538.2,393.1L538.5,337.9","a": "n9","b": "n6","l": 55.2},{"i": 12,"c": "o","d": "M538.5,246.2L538.0,300.7","a": "n2","b": "n6","l": 54.5},{"i": 13,"c": "o","d": "M766.9,277.7C767.2,286.1 769.0,316.1 768.7,328.0C768.4,339.9 765.9,345.5 765.3,349.0","a": "n5","b": null,"l": 71.6},{"i": 14,"c": "o","d": "M592.0,404.3C601.5,410.0 637.3,432.1 648.7,438.3C660.2,444.5 658.7,441.1 660.7,441.7","a": null,"b": null,"l": 78.6},{"i": 15,"c": "o","d": "M872.8,301.2C872.3,299.4 870.2,299.9 869.7,290.7C869.2,281.5 869.7,253.5 869.7,246.1","a": "n8","b": "n3","l": 55.5},{"i": 16,"c": "o","d": "M728.0,459.3C728.8,458.2 718.9,461.2 732.7,452.7C746.5,444.2 795.3,418.9 810.7,408.3C826.1,397.7 822.9,392.2 825.3,389.0","a": null,"b": null,"l": 122.1},{"i": 17,"c": "o","d": "M834.7,341.0C834.5,345.8 834.4,362.0 833.3,370.0C832.2,378.0 824.7,383.6 828.0,389.0C831.3,394.4 848.9,400.3 853.0,402.5","a": null,"b": "n10","l": 77.2},{"i": 18,"c": "o","d": "M869.7,338.0L869.5,393.3","a": "n8","b": "n10","l": 55.3},{"i": 19,"c": "o","d": "M769.0,326.7C774.7,323.2 794.1,316.5 803.3,305.7C812.5,294.9 816.2,273.5 824.3,261.7C832.4,249.9 847.5,239.6 852.2,235.2","a": null,"b": "n3","l": 127.4},{"i": 20,"c": "o","d": "M577.7,253.7C580.5,250.8 580.9,245.6 594.7,236.3C608.5,227.0 648.8,210.3 660.3,197.7C671.8,185.1 663.1,166.9 663.7,160.7","a": null,"b": null,"l": 137.6},{"i": 21,"c": "o","d": "M602.4,337.1C603.0,340.9 606.6,353.7 606.3,360.0C606.0,366.3 609.0,367.6 600.3,374.7C591.6,381.8 561.9,398.0 554.2,402.7","a": "n7","b": "n9","l": 93.1}],"adjacency": {"n0": [[2,"b"],[10,"b"]],"n1": [[0,"a"]],"n2": [[10,"a"],[12,"a"]],"n3": [[2,"a"],[15,"b"],[19,"b"]],"n4": [[1,"b"]],"n5": [[13,"a"]],"n6": [[11,"b"],[12,"b"]],"n7": [[6,"b"],[7,"a"],[9,"a"],[21,"a"]],"n8": [[15,"a"],[18,"a"]],"n9": [[4,"b"],[11,"a"],[21,"b"]],"n10": [[5,"b"],[17,"b"],[18,"b"]],"n11": [[0,"b"],[4,"a"],[5,"a"]]}};
 
 </script>
 <script>
@@ -1027,6 +1058,7 @@ window.GUILD_GRID = {
       c.classList.toggle('is-active', c.dataset.id === id);
     });
     if (sheet) sheet.focus({ preventScroll: true });
+    updateHash(id);
   }
 
   function closePanel() {
@@ -1035,7 +1067,89 @@ window.GUILD_GRID = {
     panel.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('panel-open');
     state.selected = null;
+    clearHash();
     paint();
+  }
+
+  function updateHash(id) {
+    var p = PROJECTS[id] || {};
+    var slug = (p.name ? p.name.toLowerCase().replace(/\s+/g, '-') : id);
+    if (window.location.hash !== '#' + slug) {
+      if (history.replaceState) history.replaceState(null, '', '#' + slug);
+    }
+  }
+
+  function clearHash() {
+    var currentHash = (window.location.hash || '').replace('#', '').toLowerCase();
+    if (currentHash && currentHash !== 'top' && currentHash !== 'work' && currentHash !== 'manifesto' && currentHash !== 'join') {
+      if (history.replaceState) history.replaceState(null, '', window.location.pathname + window.location.search);
+    }
+  }
+
+  function handleHashRoute() {
+    var hash = (window.location.hash || '').replace('#', '').toLowerCase();
+    if (!hash || hash === 'top' || hash === 'work' || hash === 'manifesto' || hash === 'join') return;
+    var targetId = null;
+    ORDER.forEach(function (id) {
+      var p = PROJECTS[id] || {};
+      if (id.toLowerCase() === hash || (p.name && p.name.toLowerCase().replace(/\s+/g, '-') === hash)) {
+        targetId = id;
+      }
+    });
+    if (targetId) openPanel(targetId);
+  }
+
+  function initFilterBar() {
+    var input = document.getElementById('project-search');
+    var tagsContainer = document.getElementById('filter-tags');
+    var activeFilter = 'all';
+
+    function applyFilter() {
+      var query = (input ? input.value : '').trim().toLowerCase();
+      ORDER.forEach(function (id) {
+        var p = PROJECTS[id] || {};
+        var nEl = nodeEls[id];
+        var cEl = grid ? grid.querySelector('.card[data-id="' + id + '"]') : null;
+        var nameMatch = (p.name || '').toLowerCase().indexOf(query) !== -1;
+        var tagMatch = (p.tagline || '').toLowerCase().indexOf(query) !== -1;
+        var stackMatch = (p.stack || []).some(function (s) { return s.toLowerCase().indexOf(query) !== -1; });
+        var matchesSearch = !query || nameMatch || tagMatch || stackMatch;
+
+        var matchesTag = activeFilter === 'all' || (p.stack || []).some(function (s) { return s.toLowerCase() === activeFilter.toLowerCase(); });
+
+        var visible = matchesSearch && matchesTag;
+
+        if (cEl) {
+          var cell = cEl.closest('.card-cell') || cEl;
+          cell.style.display = visible ? '' : 'none';
+        }
+
+        if (nEl) {
+          if (visible) {
+            nEl.classList.remove('is-dimmed');
+            nEl.style.opacity = '';
+          } else {
+            nEl.classList.add('is-dimmed');
+            nEl.style.opacity = '0.2';
+          }
+        }
+      });
+    }
+
+    if (input) {
+      input.addEventListener('input', applyFilter);
+    }
+
+    if (tagsContainer) {
+      tagsContainer.addEventListener('click', function (ev) {
+        var btn = ev.target.closest('button[data-filter]');
+        if (!btn) return;
+        tagsContainer.querySelectorAll('button[data-filter]').forEach(function (b) { b.classList.remove('is-active'); });
+        btn.classList.add('is-active');
+        activeFilter = btn.dataset.filter;
+        applyFilter();
+      });
+    }
   }
 
   function step(delta) {
@@ -1258,6 +1372,9 @@ var trainSvg = document.getElementById('train');
   renderCards();
   renderTrain();
   chrome();
+  initFilterBar();
+  handleHashRoute();
+  window.addEventListener('hashchange', handleHashRoute);
   paint();
   intro();
 
