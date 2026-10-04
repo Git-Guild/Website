@@ -18,6 +18,9 @@ def main():
     projects_path = os.path.join(SRC_DIR, "projects.js")
     app_path = os.path.join(SRC_DIR, "app.js")
     favicon_path = os.path.join(ASSETS_DIR, "favicon.svg")
+    vendor_dir = os.path.join(SRC_DIR, "vendor")
+    react_path = os.path.join(vendor_dir, "react.production.min.js")
+    react_dom_path = os.path.join(vendor_dir, "react-dom.production.min.js")
 
     if not os.path.exists(template_path):
         raise FileNotFoundError(f"Missing template: {template_path}")
@@ -27,6 +30,8 @@ def main():
     geom = read_file(geom_path) if os.path.exists(geom_path) else ""
     projects = read_file(projects_path) if os.path.exists(projects_path) else ""
     app = read_file(app_path) if os.path.exists(app_path) else ""
+    react = read_file(react_path) if os.path.exists(react_path) else ""
+    react_dom = read_file(react_dom_path) if os.path.exists(react_dom_path) else ""
 
     # Favicon base64
     if os.path.exists(favicon_path):
@@ -99,6 +104,8 @@ def main():
     html = html.replace("__QUICKSTART__", quickstart_cmd)
     html = html.replace("__PROJECTS__", projects)
     html = html.replace("__GEOMETRY__", geom)
+    html = html.replace("__REACT__", react)
+    html = html.replace("__REACT_DOM__", react_dom)
     html = html.replace("__APP__", app)
 
     with open(INDEX_HTML, "w", encoding="utf-8", newline="\n") as f:

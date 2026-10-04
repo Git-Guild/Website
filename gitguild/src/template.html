@@ -24,8 +24,10 @@ __MARK_SYMBOL__
     <span class="nav__wordmark">GIT&nbsp;GUILD</span>
   </a>
   <nav class="nav__links" id="navlinks" aria-label="Sections">
-    <a href="#work">Work</a>
+    <a href="#work">Projects</a>
+    <a href="#merge-train">Merge train</a>
     <a href="#manifesto">Manifesto</a>
+    <a href="__DOCS__" target="_blank" rel="noopener">Docs</a>
     <a href="#join">Join</a>
   </nav>
   <a class="btn btn--ghost nav__cta" href="__GITHUB__" target="_blank" rel="noopener">GitHub&nbsp;<span aria-hidden="true">↗</span></a>
@@ -51,7 +53,7 @@ __MARK_SYMBOL__
   <p class="lede reveal">__LEDE__</p>
   <p class="hint reveal">
     <span class="hint__key">Hover</span> a node to light up its wiring ·
-    <span class="hint__key">Click</span> to open the project ·
+    <span class="hint__key">Click</span> to open the project page ·
     <span class="hint__key">Tab</span> to travel the network
   </p>
   <div class="hero__cta reveal">
@@ -86,7 +88,7 @@ __MARK_SYMBOL__
   <ul class="cards" id="cards"></ul>
 </section>
 
-<section class="band" aria-labelledby="train-title">
+<section class="band" id="merge-train" aria-labelledby="train-title">
   <div class="band__head reveal">
     <h2 class="section__title" id="train-title"><span class="slash" aria-hidden="true">//</span> Merge train</h2>
     <p class="section__sub">The last six projects that landed on <code>main</code>, oldest to newest. Hover a commit to light up the node it lives on.</p>
@@ -155,10 +157,40 @@ __MARK_SYMBOL__
 <footer class="footer">
   <svg class="mark mark--foot" viewBox="__VIEW__" aria-hidden="true"><use href="#guild-mark"></use></svg>
   <p class="footer__name">GIT GUILD · <span data-bind="count">12</span> PROJECTS</p>
-  <nav class="footer__links" aria-label="Footer">
-    <a href="#work">Work</a><a href="#manifesto">Manifesto</a><a href="#join">Join</a>
-    <a href="__GITHUB__" target="_blank" rel="noopener">GitHub</a><a href="__MAIL__">Contact</a>
-  </nav>
+  <div class="footer__grid">
+    <div class="footer__group">
+      <h3 class="footer__heading">Git Guild</h3>
+      <p class="footer__blurb">Twelve open-source tools wired into one network.</p>
+      <a class="btn btn--ghost footer__cta" href="__GITHUB__" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a>
+    </div>
+    <nav class="footer__group" aria-label="Explore">
+      <h3 class="footer__heading">Explore</h3>
+      <a href="#work">Projects</a>
+      <a href="#merge-train">Merge train</a>
+      <a href="#manifesto">Manifesto</a>
+      <a href="#join">Join</a>
+    </nav>
+    <nav class="footer__group" aria-label="Collective">
+      <h3 class="footer__heading">Collective</h3>
+      <a href="__GITHUB__" target="_blank" rel="noopener">GitHub org</a>
+      <a href="__CHAT__" target="_blank" rel="noopener">Community chat</a>
+      <a href="__MAIL__">Contact</a>
+      <a href="__GOODFIRST__" target="_blank" rel="noopener">Good-first-issues</a>
+    </nav>
+    <nav class="footer__group" aria-label="Legal">
+      <h3 class="footer__heading">Legal</h3>
+      <a href="legal/privacy.html">Privacy</a>
+      <a href="legal/terms.html">Terms</a>
+      <a href="legal/license.html">License</a>
+      <a href="legal/security.html">Security</a>
+    </nav>
+  </div>
+  <div class="footer__bar">
+    <span>© <span data-bind="year">2026</span> Git Guild</span>
+    <span>All projects MIT licensed unless noted.</span>
+    <span>Built in the open. <span aria-hidden="true">◉</span></span>
+    <a href="#top" data-to-top>Back to top ↑</a>
+  </div>
   <p class="footer__note">Built in the open by the Guild. <span aria-hidden="true">◉</span> All projects MIT licensed unless noted.</p>
 </footer>
 
@@ -186,6 +218,7 @@ __MARK_SYMBOL__
       <a class="btn btn--primary" data-bind="visit" href="#" target="_blank" rel="noopener">Visit project <span aria-hidden="true">↗</span></a>
       <a class="btn btn--ghost" data-bind="repo" href="#" target="_blank" rel="noopener" hidden>Source</a>
       <a class="btn btn--ghost" data-bind="docs" href="#" target="_blank" rel="noopener" hidden>Docs</a>
+      <a class="btn btn--ghost" data-bind="page" href="#">Open project page →</a>
     </div>
 
     <div class="panel__nav">
@@ -201,6 +234,12 @@ __PROJECTS__
 </script>
 <script>
 __GEOMETRY__
+</script>
+<script>
+__REACT__
+</script>
+<script>
+__REACT_DOM__
 </script>
 <script>
 __APP__

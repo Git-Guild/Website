@@ -3,116 +3,118 @@ window.GUILD = {
   collective: {
     name: 'Git Guild',
     subtitle: 'Developer Collective',
-    lede: 'A student-first open-source collective. Every node in the mark below is a live repository — click one to open it.',
-    since: 2024,
+    lede: 'Twelve projects, one network. Every node in the mark below is a live repository — click one to open it.',
+    since: 2021,
     links: {
-      github: 'https://github.com/Git-Guild',
+      github: 'https://github.com/',
       chat: 'https://discord.com/',
-      mail: 'mailto:hello@gitguild.dev'
+      mail: 'mailto:hello@gitguild.dev',
+      docs: 'https://github.com/',
+      goodFirstIssues: 'https://github.com/search?q=good-first-issue&type=issues'
     },
-    quickstart: 'git clone https://github.com/Git-Guild/GitDeep.git'
+    quickstart: 'npx @gitguild/cli open <project>'
   },
 
   projects: {
     n0: {
-      name: 'GitDeep',
-      tagline: 'GitHub account assessment via local AI models',
-      blurb: 'Local AI assessment tool with Employer mode for hiring developers and Developer Mode providing tailored tips to level up your profile.',
+      name: 'Anchor',
+      tagline: 'Zero-config release automation',
+      blurb: 'Cut a versioned release from any branch in a monorepo with one command. Anchor derives the bump from conventional commits, writes the changelog, tags the commit and runs your publish graph in dependency order.',
       year: 2025, status: 'stable', featured: true,
-      stack: ['TypeScript', 'Gemini', 'Ollama', 'Claude'],
-      url: 'https://github.com/Git-Guild/GitDeep', repo: 'https://github.com/Git-Guild/GitDeep', docs: null
+      stack: ['TypeScript', 'Node', 'GitHub Actions'],
+      url: 'https://github.com/', repo: 'https://github.com/', docs: null
     },
     n1: {
-      name: 'Git-Issue',
-      tagline: 'Discover open-source issues to contribute',
-      blurb: 'Unified portal that helps developers find issues to contribute from one website with streamlined, custom search.',
-      year: 2025, status: 'stable', featured: true,
-      stack: ['TypeScript', 'GitHub Actions', 'CI/CD'],
-      url: 'https://github.com/Git-Guild/Git-Issue', repo: 'https://github.com/Git-Guild/Git-Issue', docs: null
+      name: 'Guild CLI',
+      tagline: 'The hub that ties every tool together',
+      blurb: 'One binary, twelve plugins. The CLI discovers the rest of the collective on install and exposes each project as a namespaced command, so the whole toolchain is one `guild` away.',
+      year: 2025, status: 'stable',
+      stack: ['Go', 'Cobra', 'gRPC'],
+      url: 'https://github.com/', repo: 'https://github.com/', docs: 'https://github.com/'
     },
     n2: {
-      name: 'Website',
-      tagline: 'Interactive website & design tooling',
-      blurb: 'The main website for the Git Guild developer collective, built with custom vector geometry and functional test automation.',
-      year: 2025, status: 'stable',
-      stack: ['JavaScript', 'HTML/CSS', 'Python', 'Playwright'],
-      url: 'https://github.com/Git-Guild/Website', repo: 'https://github.com/Git-Guild/Website', docs: 'https://github.com/Git-Guild/Website/tree/main/docs'
+      name: 'Lattice',
+      tagline: 'Composable GraphQL federation',
+      blurb: 'Describe a schema once, compose it anywhere. Lattice splits a graph into independently deployable services and stitches them back together at the edge with query-plan caching.',
+      year: 2024, status: 'stable',
+      stack: ['TypeScript', 'GraphQL', 'Redis'],
+      url: 'https://github.com/', repo: 'https://github.com/', docs: null
     },
     n3: {
-      name: 'CPP-Starting-from-0',
-      tagline: 'Hands-on C++ fundamentals & OOP guide',
-      blurb: 'Practical hands-on repository covering C++ object-oriented programming fundamentals, data structures, and beginner projects.',
-      year: 2025, status: 'stable',
-      stack: ['C++', 'OOP', 'Algorithms'],
-      url: 'https://github.com/Git-Guild/CPP-Starting-from-0', repo: 'https://github.com/Git-Guild/CPP-Starting-from-0', docs: null
-    },
-    n4: {
-      name: 'Python-Starting-from-0',
-      tagline: 'Progressive beginner Python curriculum',
-      blurb: 'A structured, beginner-friendly curriculum covering core Python concepts, scripts, and fundamental projects from absolute scratch.',
-      year: 2025, status: 'stable',
-      stack: ['Python', 'Python3', 'FreeCodeCamp'],
-      url: 'https://github.com/Git-Guild/Python-Starting-from-0', repo: 'https://github.com/Git-Guild/Python-Starting-from-0', docs: null
-    },
-    n5: {
-      name: 'JAVA-Starting-from-0',
-      tagline: 'Comprehensive Java starter repository',
-      blurb: 'A step-by-step learning guide for Java programming, OOP principles, and hands-on exercises designed for absolute beginners.',
-      year: 2025, status: 'stable',
-      stack: ['Java', 'OOP', 'Starter'],
-      url: 'https://github.com/Git-Guild/JAVA-Starting-from-0', repo: 'https://github.com/Git-Guild/JAVA-Starting-from-0', docs: null
-    },
-    n6: {
-      name: '.github',
-      tagline: 'Community health & collective guidelines',
-      blurb: 'Central health guidelines, contribution standards, and onboarding docs for the Git Guild student-first open-source collective.',
-      year: 2024, status: 'stable',
-      stack: ['Markdown', 'GitHub Actions', 'Community'],
-      url: 'https://github.com/Git-Guild/.github', repo: 'https://github.com/Git-Guild/.github', docs: null
-    },
-    n7: {
-      name: 'Warden',
-      tagline: 'Policy-as-code for CI and secrets',
-      blurb: 'Write access rules once in a small declarative language. Warden enforces them in CI, at deploy time and in your cloud account.',
-      year: 2025, status: 'beta',
-      stack: ['Go', 'OPA', 'Terraform'],
-      url: 'https://github.com/Git-Guild/Website', repo: 'https://github.com/Git-Guild/Website', docs: null
-    },
-    n8: {
       name: 'Beacon',
       tagline: 'Observability for edge deploys',
-      blurb: 'Streaming traces and structured logs from edge locations, sampled intelligently so you keep the requests that matter.',
-      year: 2025, status: 'beta',
+      blurb: 'Streaming traces and structured logs from hundreds of edge locations, sampled intelligently so you keep the requests that matter and drop the noise.',
+      year: 2024, status: 'stable',
       stack: ['Rust', 'OpenTelemetry', 'ClickHouse'],
-      url: 'https://github.com/Git-Guild/Website', repo: 'https://github.com/Git-Guild/Website', docs: null
+      url: 'https://github.com/', repo: 'https://github.com/', docs: null
     },
-    n9: {
+    n4: {
+      name: 'Prism',
+      tagline: 'Deterministic UI snapshot tests',
+      blurb: 'Renders every component state in a real browser and diffs it against a committed baseline. Fonts, clocks and randomness are frozen, so a failure always means a real visual change.',
+      year: 2025, status: 'beta',
+      stack: ['TypeScript', 'Playwright', 'Vite'],
+      url: 'https://github.com/', repo: 'https://github.com/', docs: null
+    },
+    n5: {
+      name: 'Cinder',
+      tagline: 'A bundler that respects the network',
+      blurb: 'Content-addressed builds with per-route budgets. Cinder fails a pull request the moment a bundle crosses its weight budget, and tells you exactly which import did it.',
+      year: 2024, status: 'stable',
+      stack: ['Rust', 'SWC', 'WASM'],
+      url: 'https://github.com/', repo: 'https://github.com/', docs: null
+    },
+    n6: {
+      name: 'Warden',
+      tagline: 'Policy-as-code for CI and secrets',
+      blurb: 'Write access rules once in a small declarative language. Warden enforces them in CI, at deploy time and in your cloud account, with a dry-run diff before anything changes.',
+      year: 2023, status: 'stable',
+      stack: ['Go', 'OPA', 'Terraform'],
+      url: 'https://github.com/', repo: 'https://github.com/', docs: 'https://github.com/'
+    },
+    n7: {
       name: 'Loom',
       tagline: 'Visual editor for pipeline DAGs',
-      blurb: 'Drag a pipeline together, then export the exact YAML your CI already understands. Every graph is diffable and versioned.',
-      year: 2025, status: 'beta',
+      blurb: 'Drag a pipeline together, then export the exact YAML your CI already understands. Every graph is diffable, reviewable and versioned like ordinary source.',
+      year: 2024, status: 'beta',
       stack: ['React', 'YAML', 'D3'],
-      url: 'https://github.com/Git-Guild/Website', repo: 'https://github.com/Git-Guild/Website', docs: null
+      url: 'https://github.com/', repo: 'https://github.com/', docs: null
+    },
+    n8: {
+      name: 'Vector',
+      tagline: 'Typed clients from any OpenAPI spec',
+      blurb: 'Point Vector at a spec and get a fully typed client, runtime validation and mock server. Regenerate on every upstream change so client drift stops being a category of bug.',
+      year: 2025, status: 'stable',
+      stack: ['TypeScript', 'OpenAPI', 'Zod'],
+      url: 'https://github.com/', repo: 'https://github.com/', docs: null
+    },
+    n9: {
+      name: 'Kiln',
+      tagline: 'Reproducible dev environments in seconds',
+      blurb: 'Declare the services, databases and fixtures a task needs. Kiln boots them from a warm content-addressed cache and tears the whole thing down when you are done.',
+      year: 2023, status: 'stable',
+      stack: ['Rust', 'containerd', 'Nix'],
+      url: 'https://github.com/', repo: 'https://github.com/', docs: null
     },
     n10: {
-      name: 'Vector',
-      tagline: 'Typed clients from OpenAPI spec',
-      blurb: 'Point Vector at a spec and get a fully typed client, runtime validation and mock server. Regenerate on every upstream change.',
-      year: 2025, status: 'experimental',
-      stack: ['TypeScript', 'OpenAPI', 'Zod'],
-      url: 'https://github.com/Git-Guild/Website', repo: 'https://github.com/Git-Guild/Website', docs: null
+      name: 'Ferry',
+      tagline: 'Schema migrations with real dry-runs',
+      blurb: 'Moves data between shapes safely: expand, backfill, verify, contract. Ferry estimates row counts and lock impact before you approve, and can roll a half-finished migration back.',
+      year: 2023, status: 'stable',
+      stack: ['Python', 'Postgres', 'SQL'],
+      url: 'https://github.com/', repo: 'https://github.com/', docs: null
     },
     n11: {
       name: 'Bedrock',
-      tagline: 'Infrastructure primitives & modules',
-      blurb: 'The well-tested modules the rest of the collective is built on — networking, identity, queues and deploy plumbing.',
-      year: 2024, status: 'stable',
+      tagline: 'Infrastructure primitives, as modules',
+      blurb: 'The boring, well-tested modules the rest of the collective is built on — networking, identity, queues and deploy plumbing. Composable, documented and versioned.',
+      year: 2021, status: 'stable',
       stack: ['Terraform', 'HCL', 'AWS'],
-      url: 'https://github.com/Git-Guild/Website', repo: 'https://github.com/Git-Guild/Website', docs: null
+      url: 'https://github.com/', repo: 'https://github.com/', docs: 'https://github.com/'
     }
   },
 
-  nodeClickBehavior: 'panel',
+  nodeClickBehavior: 'page',
 
   mergeTrain: ['n11', 'n9', 'n6', 'n1', 'n5', 'n0'],
 
