@@ -2,8 +2,9 @@
 
 ## 1. What we were building
 
-A one-page website for **Git Guild**, a developer collective with twelve
-open-source projects.
+A one-page website for **Git Guild**, a developer collective established in
+**2026** that publishes twelve open-source projects —
+[github.com/Git-Guild](https://github.com/Git-Guild).
 
 Three rules shaped every decision:
 
@@ -245,6 +246,7 @@ No build runs on the host. Nothing to install, nothing to break.
 | *Why trace the logo instead of using the image?* | So it scales perfectly, parts can animate and be clicked, and we ship zero image files. |
 | *Why 12 rings?* | One ring per project — that's what makes the logo a navigation instead of decoration. |
 | *Where does the content live?* | One file, `src/projects.js`. Change it, rebuild, done. |
+| *Where's the org?* | [github.com/Git-Guild](https://github.com/Git-Guild) — the site links there from the nav, footer and every page. |
 | *What framework is it?* | None. Plain HTML, CSS and JavaScript, assembled by one Python script. |
 | *How big is it?* | ~67 KB, single file, no network requests — it opens from a USB stick. |
 | *How do you change the colours?* | Four CSS variables at the top of `styles.css`. |

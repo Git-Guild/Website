@@ -1,7 +1,10 @@
 """Screenshot + interaction QA across home, project, and legal pages."""
 import asyncio
 import os
+import sys
 from playwright.async_api import async_playwright
+
+sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 URL = "file://" + os.path.join(ROOT, "gitguild", "index.html")

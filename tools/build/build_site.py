@@ -86,7 +86,7 @@ def main():
 </svg>"""
 
     lede = "Twelve projects, one network. Every node in the mark below is a live repository — click one to open it."
-    github_link = "https://github.com/gitguild"
+    github_link = "https://github.com/Git-Guild"
     chat_link = "https://discord.com/"
     mail_link = "mailto:hello@gitguild.dev"
     quickstart_cmd = "npx @gitguild/cli open <project>"

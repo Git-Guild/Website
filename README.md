@@ -1,7 +1,8 @@
 # Website
 
 Main website for the org — a single self-contained page for the **Git Guild**
-developer collective, plus the tooling that builds and verifies it.
+developer collective (est. 2026, [github.com/Git-Guild](https://github.com/Git-Guild)),
+plus the tooling that builds and verifies it.
 
 Open [`gitguild/index.html`](gitguild/index.html) in a browser: no server, no
 build step, no network requests.
