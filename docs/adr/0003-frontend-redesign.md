@@ -1,14 +1,17 @@
 # ADR 0003: Front-end redesign (warm-direct, slider as browser)
 
 Date: 2026-10-08
-Status: proposed (STOP — awaiting go-ahead, do not build)
+Status: proposed (STOP — awaiting go-ahead, do not build). Reality 2026-10-08: steps 1–7 NOT STARTED on `main`; steps 1–5 exist only on unmerged branch `feat/adr-0003-steps-1-5` (commit `4111608`); steps 6–7 not started anywhere. `qa_assert.py` on `main` still checks the quick-view panel; `build_site.py` on `main` has no placeholder-link guard.
 
 ## Context
 
-Git Guild site serves tier-3 (and lower) college students who lost their
-first/second year. Likely visitors: mid-range Android phones, patchy data,
-short attention. Design for them first, desktop second. Target feeling:
-"there's a place for people like me, and I can start today."
+Git Guild builds a community and team for students (freshers, juniors,
+seniors, anyone at a lower-tier college without good opportunities) who
+want to learn, collaborate and grow together. Target feeling: "there's
+a place for people like me, and I can start today." Mobile and desktop
+are equally important — no assumption about visitors' phones. (The
+founder's own lost first year is private motivation, not site
+messaging; do not frame the site around "students who lost a year".)
 
 Verified in `build/qa/` screenshots + live measurements (2026-10-08):
 
@@ -20,18 +23,19 @@ Verified in `build/qa/` screenshots + live measurements (2026-10-08):
 - Template feel comes from copy (stats `Projects / Traces / Technologies`,
   maintainer manifesto), but real copy is OUT for this phase — layout,
   hierarchy and spacing must carry the welcome.
-- Hero fit: at 390×844 both CTAs in view (hero 777px, stage 351px) but hero
-  fills 92% of viewport; at **360×640 both CTAs are below the fold**
-  (CTA tops 673/731px, stage 324px). Emblem and CTA cannot both win at
-  current size.
+- Hero fit (small-viewport test, not an audience claim): at 390×844 both CTAs in view (hero 777px, stage 351px) but hero
+   fills 92% of viewport; at **360×640 both CTAs are below the fold**
+   (CTA tops 673/731px, stage 324px). Emblem and CTA cannot both win at
+   current size.
 - Contrast on `BG #0A0D11`: amber `#F4A330` 9.39:1, `amber-2` 12.87:1,
   bone 15.85:1 (AA pass); `muted #78828F` 5.00:1 (passes, thin at 11px mono).
 - Paint profile (390px, 4x CPU throttle, 120-frame rAF): `getTotalLength`
   over 22 traces 0.2ms → 1.0ms throttled; spark append ≈ 0ms. JS geometry is
   cheap. Risk is paint: `hero__glow` blur, fixed `body::before/::after`
   gradients + grid mask, 12× `card::after` gradients, spark `drop-shadow`,
-  nav `backdrop-blur`. The 16.6ms readings are the 60fps cap — treated as
-  no-regression only, not proof for low-end GPUs.
+   nav `backdrop-blur`. The 16.6ms readings are the 60fps cap — treated as
+   no-regression only. Paint-cost discipline stays as general good
+   practice (not an audience/device claim).
 
 Non-negotiables (kept): single self-contained page, no network requests,
 no web fonts, no CDN. Edit `gitguild/src/*`, rebuild with
@@ -100,9 +104,15 @@ Glossary (`GLOSSARY.md`): **node** = ring `n0–n11`; **project** = entry in
     **`start a track` becomes primary**; chat CTA is interim, not a claim
     that tracks don't exist.
 13. **Future path picker: hook only.** Add `data-route` attribute / store
-    field for a future route highlight + this ADR note. No empty DOM slot,
-    no reserved layout space (that recreates dead space). Build the slot
-    when the feature ships.
+     field for a future route highlight + this ADR note. No empty DOM slot,
+     no reserved layout space (that recreates dead space). Build the slot
+     when the feature ships.
+14. **Site title (recorded, not applied yet).** The agreed title is
+     "Git Guild — Learn, Build, Belong". Recorded here only — do not
+     apply to `template.html` / `index.html` in this phase.
+15. **Mode = preserve brand.** Keep the dark + amber palette, the logo,
+     the interactive emblem, and the type family. Layout and UI may
+     change aggressively around them.
 
 ## Explicitly out
 
@@ -116,27 +126,26 @@ Glossary (`GLOSSARY.md`): **node** = ring `n0–n11`; **project** = entry in
 - Any design that depends on content we don't have — flagged in build
   steps instead.
 
-## Build order (small steps)
+## Build order (small steps — status on `main` as of 2026-10-08: all NOT STARTED; steps 1–5 exist only on unmerged `feat/adr-0003-steps-1-5`)
 
-1. **Placeholder-link guard.** CTA reads `collective.links.chat` with
+1. **Placeholder-link guard.** (Not started on `main`; done on branch.) CTA reads `collective.links.chat` with
    `TODO(chat-link)` marker; build warns and `qa_assert` fails on bare
    placeholders (`https://discord.com/`, `https://github.com/` bare
    project URLs). No visual change.
-2. **Retire panel → select-only rings + chip.** Remove panel + `Quick
+2. **Retire panel → select-only rings + chip.** (Not started on `main`; done on branch.) Remove panel + `Quick
    view`; ring tap selects; chip (`03/12 Name · View ↓`) scrolls to
    slider. Update `qa_assert` panel checks to chip/select checks.
-3. **Slider as browser.** Mobile peek carousel + counter + dots/index;
+3. **Slider as browser.** (Not started on `main`; done on branch.) Mobile peek carousel + counter + dots/index;
    desktop spotlight + index; prev/next + arrows; a11y roles per
    decision 7. Single source from `window.GUILD`, `order[:12]`.
-4. **Hero compaction + lede slot.** 248px emblem cap, one-line eyebrow,
+4. **Hero compaction + lede slot.** (Not started on `main`; done on branch.) 248px emblem cap, one-line eyebrow,
    90–120-char `__LEDE__` slot (example for length/tone only, not claims:
-   *"Lost a year? You're not late — pick one project and ask anything
-   today."*). CTA hierarchy per decision 12.
-5. **Section rhythm + amber tightening.** Dense/air alternation, amber to
+   *"New here? Pick one project and explore it today — ask anything."*). CTA hierarchy per decision 12.
+5. **Section rhythm + amber tightening.** (Not started on `main`; done on branch.) Dense/air alternation, amber to
    interactive/wiring, 11px-min labels, system-only type scale.
-6. **Motion.** Wrapper-only breathing + interaction sparks with pause
+6. **Motion.** (Not started anywhere.) Wrapper-only breathing + interaction sparks with pause
    rules (decision 5); instant re-entry (decision 6); reduced-motion pass.
-7. **Route hook.** `data-route` / store field only + comment; no layout.
+7. **Route hook.** (Not started anywhere.) `data-route` / store field only + comment; no layout.
 
 ## Verification per step
 
@@ -155,8 +164,9 @@ width. Commit `gitguild/index.html` only when all three widths pass.
 - Lede `__LEDE__` — placeholder slot; example above is length/tone only.
 - Project `url`/`repo`/`docs` — many bare `https://github.com/`; design
   must not depend on them being real.
-- References below are the assistant's provisional picks, NOT approved —
-  Sourabh confirms/replaces separately:
+- References below are the assistant's provisional picks, still UNAPPROVED —
+   Sourabh confirms/replaces separately (owner correction 2026-10-08:
+   freeCodeCamp and Odin references remain unapproved):
   `https://www.freecodecamp.org/` (one dominant start-here action);
   `https://www.theodinproject.com/` (community path framing, dense/air
   rhythm).
