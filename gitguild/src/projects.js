@@ -3,11 +3,11 @@ window.GUILD = {
   collective: {
     name: 'Git Guild',
     subtitle: 'Developer Collective',
-    lede: 'Twelve projects, one network. Every node in the mark below is a live repository — click one to open it.',
+    lede: 'Twelve projects, one shared network. Touch a ring to preview it, then open its project page.',
     since: 2026,
     links: {
       github: 'https://github.com/Git-Guild',
-      chat: 'https://discord.com/',
+      chat: 'https://discord.com/', // TODO(chat-link): bare placeholder — replace with the real invite before launch
       mail: 'mailto:hello@gitguild.dev',
       docs: 'https://github.com/Git-Guild',
       goodFirstIssues: 'https://github.com/search?q=good-first-issue&type=issues'
@@ -113,8 +113,6 @@ window.GUILD = {
       url: 'https://github.com/', repo: 'https://github.com/', docs: 'https://github.com/'
     }
   },
-
-  nodeClickBehavior: 'page',
 
   mergeTrain: ['n11', 'n9', 'n6', 'n1', 'n5', 'n0'],
 
