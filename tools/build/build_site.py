@@ -85,11 +85,32 @@ def main():
   </symbol>
 </svg>"""
 
-    lede = "Twelve projects, one network. Every node in the mark below is a live repository — click one to open it."
+    # ADR-0003 step 4: lede slot reads collective.lede (90-120 chars, placeholder).
+    mlede = re.search(r"lede:\s*'([^']+)'", projects)
+    lede = mlede.group(1) if mlede else ""
+    if not mlede:
+        print("WARNING: collective.lede not found in projects.js; using empty lede")
+    elif not (90 <= len(lede) <= 120):
+        print(f"WARNING: lede slot is {len(lede)} chars (want 90-120): {lede[:60]}...")
     github_link = "https://github.com/Git-Guild"
-    chat_link = "https://discord.com/"
     mail_link = "mailto:hello@gitguild.dev"
     quickstart_cmd = "npx @gitguild/cli open <project>"
+
+    # ADR-0003 step 1: the chat CTA reads collective.links.chat (single source).
+    m = re.search(r"chat:\s*'([^']+)'", projects)
+    if m:
+        chat_link = m.group(1)
+    else:
+        chat_link = "https://discord.com/"
+        print("WARNING: collective.links.chat not found in projects.js; using bare fallback")
+
+    # Placeholder-link guard (warn only; qa_assert.py fails until these are real).
+    if chat_link.rstrip("/") in ("https://discord.com", "https://discord.gg"):
+        print(f"WARNING: placeholder chat link ({chat_link}) TODO(chat-link) — replace with the real invite")
+    bare_projects = sorted(set(re.findall(r"(?:url|repo|docs):\s*'(https://github\.com/)'", projects)))
+    if bare_projects:
+        n = len(re.findall(r"(?:url|repo|docs):\s*'https://github\.com/'", projects))
+        print(f"WARNING: {n} bare project URL placeholder(s) ({', '.join(bare_projects)}) — replace with real links")
 
     # Replace placeholders
     html = template

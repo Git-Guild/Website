@@ -53,39 +53,28 @@ __MARK_SYMBOL__
   <p class="lede reveal">__LEDE__</p>
   <p class="hint reveal">
     <span class="hint__key">Hover</span> a node to light up its wiring ·
-    <span class="hint__key">Click</span> to open the project page ·
+    <span class="hint__key">Click</span> to select the project ·
     <span class="hint__key">Tab</span> to travel the network
   </p>
-  <div class="hero__cta reveal">
-    <a class="btn btn--primary" href="#work">Browse all <span data-bind="count">12</span> projects</a>
-    <a class="btn btn--ghost" href="__GITHUB__" target="_blank" rel="noopener">Star on GitHub <span aria-hidden="true">↗</span></a>
+  <div class="hero__cta hero__cta--mobile">
+    <a class="btn btn--primary" href="__CHAT__" target="_blank" rel="noopener">Say hello in chat</a>
+    <a class="btn btn--ghost" href="#work">Browse projects <span aria-hidden="true">↓</span></a>
+  </div>
+  <div class="hero__cta hero__cta--desktop">
+    <a class="btn btn--primary" href="#work">Browse projects <span aria-hidden="true">↓</span></a>
+    <a class="btn btn--ghost" href="__CHAT__" target="_blank" rel="noopener">Say hello in chat</a>
   </div>
 </section>
 
-<section class="section" id="work" aria-labelledby="work-title">
+<section class="section section--dense" id="work" aria-labelledby="work-title">
   <div class="section__head reveal">
     <h2 class="section__title" id="work-title"><span class="slash" aria-hidden="true">//</span> The network</h2>
     <p class="section__sub">
       Every trace in the mark is a real dependency — tools that share code, telemetry and release plumbing.
-      Pick a card, or go back up and click the node it belongs to.
+      Swipe through the projects, or go back up and touch the ring one belongs to.
     </p>
   </div>
-  <div class="filter-bar reveal" id="filter-bar">
-    <div class="filter-bar__search">
-      <span class="filter-bar__icon" aria-hidden="true">🔍</span>
-      <input type="text" id="project-search" placeholder="Search projects or stack (e.g. Rust, Go, TypeScript)..." aria-label="Search projects">
-    </div>
-    <div class="filter-bar__tags" id="filter-tags">
-      <button class="chip is-active" data-filter="all">All</button>
-      <button class="chip" data-filter="TypeScript">TypeScript</button>
-      <button class="chip" data-filter="Rust">Rust</button>
-      <button class="chip" data-filter="Go">Go</button>
-      <button class="chip" data-filter="React">React</button>
-      <button class="chip" data-filter="Python">Python</button>
-      <button class="chip" data-filter="Terraform">Terraform</button>
-    </div>
-  </div>
-  <ul class="cards" id="cards"></ul>
+  <div id="slider-root"></div>
 </section>
 
 <section class="band" id="merge-train" aria-labelledby="train-title">
@@ -99,7 +88,7 @@ __MARK_SYMBOL__
   </div>
 </section>
 
-<section class="section section--tight" id="manifesto" aria-labelledby="man-title">
+<section class="section section--dense" id="manifesto" aria-labelledby="man-title">
   <div class="section__head reveal">
     <h2 class="section__title" id="man-title"><span class="slash" aria-hidden="true">//</span> Manifesto</h2>
     <p class="section__sub">Three rules we keep coming back to. They are not aspirational — they are how the work gets merged.</p>
@@ -193,41 +182,6 @@ __MARK_SYMBOL__
   </div>
   <p class="footer__note">Built in the open by the Guild. <span aria-hidden="true">◉</span> All projects MIT licensed unless noted.</p>
 </footer>
-
-<aside class="panel" id="panel" aria-hidden="true">
-  <div class="panel__sheet" role="dialog" aria-modal="true" aria-labelledby="p-name" tabindex="-1">
-    <button class="panel__close" data-close aria-label="Close project">Close<span aria-hidden="true">✕</span><kbd>esc</kbd></button>
-
-    <div class="panel__head">
-      <span class="panel__swatch" data-bind="swatch" aria-hidden="true"></span>
-      <span class="panel__idx" data-bind="idx">Node 01 / 12</span>
-    </div>
-
-    <h2 class="panel__name" id="p-name" data-bind="name">Project</h2>
-    <p class="panel__tagline" data-bind="tagline"></p>
-    <p class="panel__blurb" data-bind="blurb"></p>
-
-    <ul class="chips" data-bind="stack"></ul>
-
-    <dl class="panel__meta">
-      <div><dt>Year</dt><dd data-bind="year">—</dd></div>
-      <div><dt>Status</dt><dd class="status" data-bind="status" data-status="stable">stable</dd></div>
-    </dl>
-
-    <div class="panel__actions">
-      <a class="btn btn--primary" data-bind="visit" href="#" target="_blank" rel="noopener">Visit project <span aria-hidden="true">↗</span></a>
-      <a class="btn btn--ghost" data-bind="repo" href="#" target="_blank" rel="noopener" hidden>Source</a>
-      <a class="btn btn--ghost" data-bind="docs" href="#" target="_blank" rel="noopener" hidden>Docs</a>
-      <a class="btn btn--ghost" data-bind="page" href="#">Open project page →</a>
-    </div>
-
-    <div class="panel__nav">
-      <button class="panel__step" data-bind="prev" aria-label="Previous project"><span aria-hidden="true">←</span> Prev</button>
-      <span class="panel__pos" data-bind="pos">01 / 12</span>
-      <button class="panel__step" data-bind="next" aria-label="Next project">Next <span aria-hidden="true">→</span></button>
-    </div>
-  </div>
-</aside>
 
 <script>
 __PROJECTS__
