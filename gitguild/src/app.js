@@ -1,4 +1,4 @@
-/* Guild emblem app: React UMD shell rendering emblem, cards, train, panel. */
+/* Guild emblem app: React UMD shell rendering emblem, cards, train, selection chip. */
 (function () {
   'use strict';
 
@@ -13,7 +13,6 @@
   var NS = 'http://www.w3.org/2000/svg';
   var e = React.createElement;
 
-  var NODE_CLICK = CFG.nodeClickBehavior || 'page';
   var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   function slugify(name) {
@@ -44,11 +43,10 @@
     return ((GRID.adjacency || {})[id] || []).map(function (en) { return en[0]; });
   }
 
-  /* Shared UI state across the portals. */
+  /* Shared UI state across the portals. ADR-0003: ring tap selects only. */
   var store = {
     hot: null,
     selected: null,
-    panelId: null,
     listeners: [],
     set: function (patch) {
       for (var k in patch) store[k] = patch[k];
@@ -104,22 +102,10 @@
     try { window.location.href = url; } catch (err) { window.location = url; }
   }
 
-  function openPanel(id) {
-    store.set({ panelId: id, selected: id });
-    try {
-      var slug = SLUGS[id] || id;
-      if (history.replaceState) history.replaceState(null, '', '#project-' + slug);
-      else window.location.hash = 'project-' + slug;
-    } catch (err) {}
-  }
-  function closePanel() {
-    store.set({ panelId: null, selected: null });
-    try {
-      if (window.location.hash.indexOf('#project-') === 0) {
-        if (history.replaceState) history.replaceState(null, '', window.location.pathname + window.location.search);
-        else window.location.hash = '';
-      }
-    } catch (err) {}
+  /* ADR-0003 step 2: ring tap selects only — jump slider/spotlight, light ring.
+     Never navigate on first tap; the explicit Open project action navigates. */
+  function selectProject(id) {
+    store.set({ selected: id });
   }
 
   function Emblem() {
@@ -174,13 +160,11 @@
         var p = PROJECTS[id] || {};
         if (p.url) { window.open(p.url, '_blank', 'noopener'); return; }
       }
-      if (ev.shiftKey) { openPanel(id); return; }
       (tracesOf(id) || []).forEach(function (ti) {
         var len = ((GRID.traces || [])[ti] || {}).l || 200;
         spark(ti, 'a', Math.max(320, Math.min(900, len * 1.1)));
       });
-      if (NODE_CLICK === 'panel') openPanel(id);
-      else goToProject(id);
+      selectProject(id);
     }
 
     return e(React.Fragment, null,
@@ -224,8 +208,7 @@
             onBlur: function () { store.set({ hot: null }); },
             onClick: function (ev) { onNodeClick(id, ev); },
             onKeyDown: function (ev) {
-              if (ev.key === 'Enter') { ev.preventDefault(); onNodeClick(id, ev); }
-              else if (ev.key === ' ') { ev.preventDefault(); openPanel(id); }
+              if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); onNodeClick(id, ev); }
               else if (ev.key === 'ArrowRight' || ev.key === 'ArrowDown') {
                 ev.preventDefault();
                 var si = SLOTTED.indexOf(id);
@@ -266,54 +249,209 @@
       e('span', { className: 'tip__idx' }, pad2(indexOf[id] + 1)),
       e('span', { className: 'tip__name' }, (p.name || id).toUpperCase()),
       e('span', { className: 'tip__tag' }, p.tagline || ''),
-      e('span', { className: 'tip__cta' }, 'Open project ↗')
+      e('span', { className: 'tip__cta' }, 'View ↓')
     );
   }
 
-  function Cards() {
+  /* ADR-0003 step 3: slider as the sole browser. One state machine
+     (store.selected) drives both viewports — mobile peek carousel + counter +
+     dots, desktop spotlight + dense index — plus prev/next and arrow keys.
+     Ring tap jumps the slider; only the active slide is focusable. */
+  function stepSelection(delta) {
+    var cur = store.selected || SLOTTED[0];
+    var i = (SLOTTED.indexOf(cur) + delta + SLOTTED.length) % SLOTTED.length;
+    store.set({ selected: SLOTTED[i] });
+  }
+
+  function nearestSlideIdx(track) {
+    var slides = track.querySelectorAll('.slide');
+    if (!slides.length) return 0;
+    var mid = track.scrollLeft + track.clientWidth / 2;
+    var best = 0, bestD = Infinity;
+    slides.forEach(function (sl, i) {
+      var d = Math.abs((sl.offsetLeft + sl.offsetWidth / 2) - mid);
+      if (d < bestD) { bestD = d; best = i; }
+    });
+    return best;
+  }
+
+  function Slider() {
     var s = useStore();
-    return e(React.Fragment, null,
-      ORDER.map(function (id) {
+    var trackRef = React.useRef(null);
+    var scrollT = React.useRef(null);
+    var gestured = React.useRef(false);
+    var displayId = s.selected || SLOTTED[0];
+    var displayIdx = Math.max(0, SLOTTED.indexOf(displayId));
+    var p0 = PROJECTS[displayId] || {};
+
+    /* Jump the carousel to the selected slide (ring tap, dots, arrows).
+       Skip when already there: a no-op programmatic scroll can still emit a
+       scroll event, which would wrongly adopt the first slide on load. */
+    React.useEffect(function () {
+      var track = trackRef.current;
+      if (!track || !track.clientWidth) return;
+      if (nearestSlideIdx(track) === displayIdx) return;
+      var slides = track.querySelectorAll('.slide');
+      var sl = slides[displayIdx];
+      if (!sl) return;
+      var x = sl.offsetLeft;
+      try { track.scrollTo({ left: x, behavior: reduced ? 'auto' : 'smooth' }); }
+      catch (err) { track.scrollLeft = x; }
+    }, [displayId]);
+
+    /* Only the active slide stays in the tab order / a11y tree. */
+    React.useEffect(function () {
+      var track = trackRef.current;
+      if (!track) return;
+      track.querySelectorAll('.slide').forEach(function (sl, i) {
+        try { sl.inert = SLOTTED[i] !== displayId; } catch (err) {}
+      });
+    });
+
+    /* Swipe settles onto a slide: adopt it as the selection (debounced so a
+       programmatic glide does not flicker through intermediates, and gated
+       on a track gesture so layout/scroll noise on load can never select). */
+    function onTrackScroll() {
+      var track = trackRef.current;
+      if (!track) return;
+      if (scrollT.current) clearTimeout(scrollT.current);
+      scrollT.current = setTimeout(function () {
+        if (!gestured.current) return;
+        gestured.current = false;
+        var id = SLOTTED[nearestSlideIdx(track)];
+        if (id && id !== store.selected) store.set({ selected: id });
+      }, 140);
+    }
+
+    function markGesture() { gestured.current = true; }
+
+    function select(id) { store.set({ selected: id }); }
+
+    var slides = SLOTTED.map(function (id, i) {
+      var p = PROJECTS[id] || {};
+      var active = id === displayId;
+      var chips = (p.stack || []).slice(0, 3).map(function (c, j) {
+        return e('li', { key: j }, c);
+      });
+      return e('article', {
+        key: id,
+        className: 'slide' + (s.hot === id ? ' is-hot' : '') + (active ? ' is-active' : ''),
+        'data-id': id,
+        role: 'group',
+        'aria-label': (i + 1) + ' of ' + SLOTTED.length + ': ' + (p.name || id),
+        'aria-hidden': active ? undefined : 'true',
+        tabIndex: active ? '0' : '-1',
+        onMouseEnter: function () { store.set({ hot: id }); },
+        onMouseLeave: function () { store.set({ hot: null }); },
+        onFocus: function () { store.set({ hot: id }); },
+        onBlur: function () { store.set({ hot: null }); },
+        onClick: function (ev) {
+          if (ev.target.closest && ev.target.closest('a')) return;
+          select(id);
+        },
+        onKeyDown: function (ev) {
+          if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); select(id); }
+        }
+      },
+        e('span', { className: 'slide__head', 'aria-hidden': 'true' },
+          e('span', { className: 'slide__idx' }, pad2(i + 1)),
+          e('span', { className: 'slide__pip' }),
+          p.featured ? e('span', { className: 'slide__flag' }, 'flagship') : null
+        ),
+        e('span', { className: 'slide__name' }, p.name || id),
+        e('span', { className: 'slide__tag' }, p.tagline || ''),
+        e('span', { className: 'slide__chips' }, e('ul', { className: 'chips' }, chips)),
+        e('a', { className: 'slide__open', href: pageUrl(id) }, 'Open project ', e('span', { 'aria-hidden': 'true' }, '→'))
+      );
+    });
+
+    var spotChips = (p0.stack || []).map(function (c, i) {
+      return e('li', { key: i }, c);
+    });
+    var spot = e('div', { className: 'spot', id: 'spotlight', 'aria-live': 'polite' },
+      e('p', { className: 'spot__idx' },
+        'Node ' + pad2(displayIdx + 1) + ' / ' + pad2(SLOTTED.length),
+        p0.featured ? e('span', { className: 'spot__flag' }, 'flagship') : null),
+      e('h3', { className: 'spot__name' }, p0.name || displayId),
+      e('p', { className: 'spot__tag' }, p0.tagline || ''),
+      e('p', { className: 'spot__blurb' }, p0.blurb || ''),
+      e('ul', { className: 'chips spot__chips' }, spotChips),
+      e('a', { className: 'btn btn--primary spot__open', href: pageUrl(displayId) },
+        'Open project ', e('span', { 'aria-hidden': 'true' }, '→'))
+    );
+
+    var index = e('ul', { className: 'sidx', 'aria-label': 'All projects' },
+      SLOTTED.map(function (id, i) {
         var p = PROJECTS[id] || {};
-        var n = byId[id] || { c: 'o' };
-        var chips = (p.stack || []).slice(0, 3).map(function (c, i) {
-          return e('li', { key: i }, c);
-        });
-        var isHot = s.hot === id;
-        return e('li', { key: id, className: 'card-cell' },
-          e('a', {
-            className: 'card card--' + (n.c === 'w' ? 'w' : 'o') + (isHot ? ' is-hot' : '') + (s.selected === id ? ' is-active' : ''),
-            'data-id': id, href: pageUrl(id),
-            'aria-label': 'Open ' + (p.name || id) + (OVERFLOW.indexOf(id) >= 0 ? ' (card only, no ring)' : ''),
+        var active = id === displayId;
+        return e('li', { key: id },
+          e('button', {
+            type: 'button',
+            className: 'sidx__row' + (s.hot === id ? ' is-hot' : '') + (active ? ' is-active' : ''),
+            'data-id': id,
+            'aria-label': 'Show ' + (p.name || id) + ', ' + (i + 1) + ' of ' + SLOTTED.length + (active ? ' (current)' : ''),
+            'aria-current': active ? 'true' : undefined,
             onMouseEnter: function () { if (byId[id]) store.set({ hot: id }); },
             onMouseLeave: function () { store.set({ hot: null }); },
             onFocus: function () { if (byId[id]) store.set({ hot: id }); },
             onBlur: function () { store.set({ hot: null }); },
-            onClick: function (ev) {
-              if (ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.button === 1) return;
-              ev.preventDefault();
-              (tracesOf(id) || []).forEach(function (ti) { spark(ti, 'a', 500); });
-              setTimeout(function () { goToProject(id); }, reduced ? 0 : 120);
-            }
+            onClick: function () { select(id); }
           },
-            e('span', { className: 'card__head' },
-              e('span', { className: 'card__idx' }, pad2(indexOf[id] + 1)),
-              e('span', { className: 'card__pip' }),
-              p.featured ? e('span', { className: 'card__flag' }, 'flagship') : null,
-              OVERFLOW.indexOf(id) >= 0 ? e('span', { className: 'card__flag' }, 'card only') : null
-            ),
-            e('span', { className: 'card__name' }, p.name || id),
-            e('span', { className: 'card__tag' }, p.tagline || ''),
-            e('span', { className: 'card__chips' }, e('ul', null, chips)),
-            e('span', { className: 'card__go', 'aria-hidden': 'true' }, 'Explore', e('span', { className: 'card__arrow' }, '↗'))
-          ),
-          e('button', {
-            className: 'card__quick', 'data-quick': id,
-            'aria-label': 'Quick view ' + (p.name || id),
-            onClick: function (ev) { ev.preventDefault(); ev.stopPropagation(); openPanel(id); }
-          }, 'Quick view')
-        );
-      })
+            e('span', { className: 'sidx__idx', 'aria-hidden': 'true' }, pad2(i + 1)),
+            e('span', { className: 'sidx__name', 'aria-hidden': 'true' }, p.name || id),
+            p.featured ? e('span', { className: 'sidx__flag', 'aria-hidden': 'true' }, 'flagship') : null
+          ));
+      }));
+
+    var dots = e('div', { className: 'dots', role: 'group', 'aria-label': 'Choose project' },
+      SLOTTED.map(function (id, i) {
+        var p = PROJECTS[id] || {};
+        return e('button', {
+          key: id, type: 'button',
+          className: 'dot' + (id === displayId ? ' is-active' : ''),
+          'data-id': id,
+          'aria-label': 'Show ' + (p.name || id) + ', ' + (i + 1) + ' of ' + SLOTTED.length,
+          onClick: function () { select(id); }
+        });
+      }));
+
+    var nav = e('div', { className: 'slider__nav' },
+      e('button', {
+        type: 'button', className: 'slider__step',
+        'aria-label': 'Previous project',
+        onClick: function () { stepSelection(-1); }
+      }, e('span', { 'aria-hidden': 'true' }, '← '), 'Prev'),
+      e('p', { className: 'slider__count' }, pad2(displayIdx + 1) + ' / ' + pad2(SLOTTED.length)),
+      e('button', {
+        type: 'button', className: 'slider__step',
+        'aria-label': 'Next project',
+        onClick: function () { stepSelection(1); }
+      }, 'Next', e('span', { 'aria-hidden': 'true' }, ' →')));
+
+    /* ADR-0002 overflow: beyond 12 slots, card-only rows with no ring. */
+    var overflow = OVERFLOW.length ? e('ul', { className: 'overflow', 'aria-label': 'More projects' },
+      OVERFLOW.map(function (id) {
+        var p = PROJECTS[id] || {};
+        return e('li', { key: id },
+          e('a', { className: 'overflow__row', href: pageUrl(id) },
+            e('span', { className: 'overflow__name' }, p.name || id),
+            e('span', { className: 'overflow__flag' }, 'card only')));
+      })) : null;
+
+    return e('div', {
+      className: 'slider',
+      role: 'region', 'aria-roledescription': 'carousel', 'aria-label': 'Projects',
+      onKeyDown: function (ev) {
+        if (ev.key === 'ArrowRight') { ev.preventDefault(); stepSelection(1); }
+        else if (ev.key === 'ArrowLeft') { ev.preventDefault(); stepSelection(-1); }
+      }
+    }, spot,
+      e('div', { className: 'carousel' },
+        e('div', {
+          className: 'carousel__track', ref: trackRef, onScroll: onTrackScroll,
+          onPointerDown: markGesture, onWheel: markGesture, onTouchStart: markGesture
+        }, slides)),
+      index, nav, dots, overflow
     );
   }
 
@@ -356,85 +494,50 @@
     );
   }
 
-  function panelStep(delta) {
-    var cur = store.panelId || ORDER[0];
-    var i = (indexOf[cur] + delta + ORDER.length) % ORDER.length;
-    openPanel(ORDER[i]);
-  }
-
-  function managePanel() {
-    var panel = document.getElementById('panel');
-    if (!panel) return;
-    var sheet = panel.querySelector('.panel__sheet');
+  /* ADR-0003 step 2: inline selection chip. Tapping a ring while the work
+     section is off-screen raises a chip inside .stage ("03/12 Vector · View
+     ↓") instead of auto-scrolling; tapping the chip scrolls to the work
+     section (home of the step-3 slider). Selection persists. */
+  function initSelChip() {
+    var stage = document.getElementById('stage');
+    var work = document.getElementById('work');
+    if (!stage || !work) return;
+    var chip = document.createElement('button');
+    chip.className = 'sel-chip';
+    chip.type = 'button';
+    chip.hidden = true;
+    stage.appendChild(chip);
+    function workInView() {
+      var r = work.getBoundingClientRect();
+      return r.top < window.innerHeight && r.bottom > 0;
+    }
     function render() {
-      var id = store.panelId;
-      if (!id) {
-        panel.classList.remove('is-open');
-        panel.setAttribute('aria-hidden', 'true');
-        document.body.classList.remove('panel-open');
-        return;
-      }
-      var p = PROJECTS[id] || {};
-      var node = byId[id] || { c: 'o' };
-      function set(bind, fn) {
-        var n = panel.querySelector('[data-bind="' + bind + '"]');
-        if (n) fn(n);
-      }
-      set('idx', function (n) { n.textContent = 'Node ' + pad2(indexOf[id] + 1) + ' / ' + pad2(ORDER.length); });
-      set('name', function (n) { n.textContent = p.name || id; });
-      set('tagline', function (n) { n.textContent = p.tagline || ''; });
-      set('blurb', function (n) { n.textContent = p.blurb || ''; });
-      set('year', function (n) { n.textContent = p.year || '—'; });
-      set('status', function (n) { n.textContent = p.status || 'stable'; n.dataset.status = p.status || 'stable'; });
-      set('stack', function (n) { n.innerHTML = (p.stack || []).map(function (x) { return '<li>' + escapeHtml(x) + '</li>'; }).join(''); });
-      set('swatch', function (n) { n.className = 'panel__swatch panel__swatch--' + (node.c === 'w' ? 'w' : 'o'); });
-      set('pos', function (n) { n.textContent = pad2(indexOf[id] + 1) + ' / ' + pad2(ORDER.length); });
-      [['visit', p.url], ['repo', p.repo], ['docs', p.docs]].forEach(function (pair) {
-        set(pair[0], function (a) {
-          if (pair[1]) { a.href = pair[1]; a.hidden = false; } else { a.hidden = true; }
-        });
-      });
-      set('page', function (a) { a.href = pageUrl(id); });
-      panel.classList.add('is-open');
-      panel.setAttribute('aria-hidden', 'false');
-      document.body.classList.add('panel-open');
-      document.querySelectorAll('.card').forEach(function (c) {
-        c.classList.toggle('is-active', c.dataset.id === id);
-      });
-      if (sheet) sheet.focus({ preventScroll: true });
+      var id = store.selected;
+      var p = id ? PROJECTS[id] : null;
+      if (!id || !p) { chip.hidden = true; return; }
+      var label = pad2(indexOf[id] + 1) + '/' + pad2(ORDER.length) + ' ' + (p.name || id);
+      chip.textContent = label + ' · View ↓';
+      chip.setAttribute('aria-label', label + ' — view in the work section below');
+      chip.hidden = workInView();
     }
     store.subscribe(render);
-    panel.addEventListener('click', function (ev) {
-      if (ev.target === panel || (ev.target.closest && ev.target.closest('.panel__close'))) closePanel();
-    });
-    var prev = panel.querySelector('[data-bind="prev"]');
-    var next = panel.querySelector('[data-bind="next"]');
-    if (prev) prev.addEventListener('click', function () { panelStep(-1); });
-    if (next) next.addEventListener('click', function () { panelStep(1); });
-    document.addEventListener('keydown', function (ev) {
-      if (!store.panelId) return;
-      if (ev.key === 'Escape') closePanel();
-      if (!ev.metaKey && !ev.ctrlKey) {
-        if (ev.key === 'ArrowRight') panelStep(1);
-        if (ev.key === 'ArrowLeft') panelStep(-1);
+    window.addEventListener('scroll', render, { passive: true });
+    window.addEventListener('resize', render);
+    chip.addEventListener('click', function () {
+      try {
+        work.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
+      } catch (err) {
+        work.scrollIntoView();
       }
     });
     render();
-    try {
-      var m = (window.location.hash || '').match(/^#project-(.+)$/);
-      if (m) {
-        var found = ORDER.filter(function (pid) { return SLUGS[pid] === m[1]; })[0];
-        if (found) openPanel(found);
-      }
-    } catch (err) {}
   }
 
   function mount() {
     var svg = document.getElementById('emblem');
-    var cards = document.getElementById('cards');
+    var sliderRoot = document.getElementById('slider-root');
     var train = document.getElementById('train');
     var tip = document.getElementById('tip');
-    var panel = document.getElementById('panel');
     if (svg) {
       svg.setAttribute('viewBox', (GRID.view || []).join(' '));
       svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
@@ -449,7 +552,7 @@
       }
     }
     if (svg) render(e(Emblem, null), svg);
-    if (cards) render(e(Cards, null), cards);
+    if (sliderRoot) render(e(Slider, null), sliderRoot);
     if (train) render(e(Train, null), train);
     if (tip) {
       var renderTip = function () {
@@ -463,7 +566,7 @@
           '<span class="tip__idx">' + pad2(indexOf[id] + 1) + '</span>' +
           '<span class="tip__name">' + escapeHtml(p.name || id) + '</span>' +
           '<span class="tip__tag">' + escapeHtml(p.tagline || '') + '</span>' +
-          '<span class="tip__cta">Open project ↗</span>';
+          '<span class="tip__cta">View ↓</span>';
         tip.classList.toggle('tip--below', py < 26);
         tip.classList.add('is-on');
         positionTip(id);
@@ -471,7 +574,7 @@
       store.subscribe(renderTip);
       renderTip();
     }
-    if (panel) managePanel();
+    initSelChip();
     chrome();
   }
 
@@ -503,62 +606,9 @@
     tip.style.marginLeft = shift + 'px';
     tip.style.marginTop = vshift + 'px';
   }
-  function initFilterBar() {
-    var input = document.getElementById('project-search');
-    var tagsContainer = document.getElementById('filter-tags');
-    var activeFilter = 'all';
-
-    function applyFilter() {
-      var query = (input ? input.value : '').trim().toLowerCase();
-      ORDER.forEach(function (id) {
-        var p = PROJECTS[id] || {};
-        var cEl = document.querySelector('.card[data-id="' + id + '"]');
-        var nameMatch = (p.name || '').toLowerCase().indexOf(query) !== -1;
-        var tagMatch = (p.tagline || '').toLowerCase().indexOf(query) !== -1;
-        var stackMatch = (p.stack || []).some(function (s) { return s.toLowerCase().indexOf(query) !== -1; });
-        var matchesSearch = !query || nameMatch || tagMatch || stackMatch;
-
-        var matchesTag = activeFilter === 'all' || (p.stack || []).some(function (s) { return s.toLowerCase() === activeFilter.toLowerCase(); });
-
-        var visible = matchesSearch && matchesTag;
-
-        if (cEl) {
-          var cell = cEl.closest('.card-cell') || cEl;
-          cell.style.display = visible ? '' : 'none';
-        }
-
-        var nEl = document.querySelector('.node[data-id="' + id + '"]');
-        if (nEl) {
-          if (visible) {
-            nEl.classList.remove('is-dimmed');
-            nEl.style.opacity = '';
-          } else {
-            nEl.classList.add('is-dimmed');
-            nEl.style.opacity = '0.2';
-          }
-        }
-      });
-    }
-
-    if (input) {
-      input.addEventListener('input', applyFilter);
-    }
-
-    if (tagsContainer) {
-      tagsContainer.addEventListener('click', function (ev) {
-        var btn = ev.target.closest('button[data-filter]');
-        if (!btn) return;
-        tagsContainer.querySelectorAll('button[data-filter]').forEach(function (b) { b.classList.remove('is-active'); });
-        btn.classList.add('is-active');
-        activeFilter = btn.dataset.filter;
-        applyFilter();
-      });
-    }
-  }
-
   function chrome() {
     document.querySelectorAll('[data-bind="since"]').forEach(function (el) {
-      if (!el.closest('#panel') && !el.closest('#panel-react')) el.textContent = CFG.collective.since;
+      el.textContent = CFG.collective.since;
     });
     document.querySelectorAll('[data-bind="count"]').forEach(function (el) { el.textContent = ORDER.length; });
     var stacks = {};
@@ -622,12 +672,10 @@
 
     document.addEventListener('keydown', function (ev) {
       if (ev.key === 'Escape') {
-        if (store.panelId) closePanel();
-        store.set({ hot: null });
+        store.set({ hot: null, selected: null });
       }
     });
 
-    initFilterBar();
     svgDimSync();
   }
 
@@ -638,11 +686,7 @@
       if (!svg) return;
       var active = store.hot || store.selected;
       svg.classList.toggle('is-focused', !!active);
-      /* Sync card + commit highlight for non-React query paths (QA uses classes). */
-      document.querySelectorAll('.card').forEach(function (c) {
-        c.classList.toggle('is-hot', c.dataset.id === store.hot);
-        c.classList.toggle('is-active', c.dataset.id === store.selected);
-      });
+      /* Sync commit highlight for non-React query paths (QA uses classes). */
       document.querySelectorAll('.commit').forEach(function (g) {
         g.classList.toggle('is-hot', g.dataset.id === store.hot || g.dataset.id === store.selected);
       });
@@ -650,8 +694,7 @@
   }
 
   window.GuildEmblem = {
-    select: function (id) { store.set({ selected: id }); },
-    open: openPanel, close: closePanel, grid: GRID,
+    select: selectProject, grid: GRID,
     slugFor: function (id) { return SLUGS[id]; },
     pageUrl: pageUrl
   };
