@@ -96,6 +96,13 @@ class SnapshotTests(unittest.TestCase):
         catalog = build_catalog({"repositories": repositories}, {"projectOrder": ["curated"], "projects": {}})
         self.assertEqual([catalog["projects"][key]["repoName"] for key in catalog["order"]], ["curated", "newer", "older"])
 
+    def test_editorial_learning_track_label_survives_catalog_build(self):
+        catalog = build_catalog(
+            {"repositories": [repo("python-track")]},
+            {"projectOrder": ["python-track"], "projects": {"python-track": {"pathLabel": "Learning track"}}},
+        )
+        self.assertEqual(catalog["projects"]["n0"]["pathLabel"], "Learning track")
+
 
 if __name__ == "__main__":
     unittest.main()

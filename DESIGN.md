@@ -212,6 +212,8 @@ Rectangular instrument language: `14px` card radius (`8px` small, `22px` large),
 ### Buttons
 - **Shape:** rounded rectangles (10px radius).
 - **Primary:** amber fill, near-black text, mono uppercase; lifts and brightens on hover. The homepage offers one repository-browsing action and one open-issue action; no chat invite is shown until one exists.
+- The selected project browser keeps a direct **Open repository** action beside a secondary detail page. This makes the real GitHub destination one action away without duplicating the project list.
+- Maintainer-curated learning tracks carry a small amber **Learning track** label in the same browser. The badge is attached to its repository row and card, not presented as a second project list.
 - **Ghost:** transparent, dimmed-bone text, hairline border; warms to an amber border on hover.
 
 ### Slider cards

@@ -53,8 +53,12 @@ async def main():
         check("slider, index and dots bind only to ordered repositories",
               all(data[key] == active_ids for key in ("slides", "rows", "dots")),
               {key: data[key] for key in ("slides", "rows", "dots")})
+        starter_labels = await page.eval_on_selector_all(".sidx__path", "els => els.map(el => el.textContent.trim())")
+        check("beginner curriculum repositories are marked as learning tracks",
+              starter_labels == ["Learning track"] * 3 and
+              all(data["projects"][key].get("pathLabel") == "Learning track" for key in active_ids[:3]), starter_labels)
         inactive_link_tabs = await page.eval_on_selector_all(
-            ".slide[aria-hidden='true'] .slide__open", "els => els.map(el => el.tabIndex)")
+            ".slide[aria-hidden='true'] .slide__actions a", "els => els.map(el => el.tabIndex)")
         check("hidden carousel slides keep their detail links out of the tab order",
               all(value == -1 for value in inactive_link_tabs), inactive_link_tabs)
         check("overflow projects stay reachable from the browser",
@@ -91,7 +95,11 @@ async def main():
         check("ring selection stays on the homepage and updates spotlight",
               "projects/" not in selection_state["url"] and selection_state["selected"] and
               selection_state["spotlight"] == selection_state["expected"], selection_state)
-        await page.locator(".spot__open").click()
+        repo_action = page.locator(".spot__repo")
+        check("selected project has a direct GitHub repository action",
+              await repo_action.get_attribute("href") == project["url"] and
+              await repo_action.get_attribute("target") == "_blank")
+        await page.locator(".spot__details").click()
         await page.wait_for_timeout(500)
         check("spotlight opens the generated repository page", page.url.endswith("/" + slug), page.url)
         check("repository page shows curated title and summary",

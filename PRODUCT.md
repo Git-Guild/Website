@@ -42,6 +42,7 @@ Name: Git Guild, developer collective, est. 2026. Voice: warm-direct — plain, 
 - Real: committed GitHub snapshot, curation order and copy in `gitguild/src/project-curation.json`, traced emblem geometry (12 nodes, 22 traces).
 - Not configured: community chat invite. Do not link to a bare placeholder or present the GitHub organization as a chat service.
 - Repository descriptions and links come from GitHub; editorial overrides stay in the curation file.
+- The three language repositories explicitly described as starting-from-zero curricula are marked as learning tracks in the project browser; other repositories remain unlabelled unless maintainers curate them.
 
 ## Product Principles
 

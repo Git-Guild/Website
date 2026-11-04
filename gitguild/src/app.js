@@ -367,15 +367,22 @@
         e('span', { className: 'slide__head', 'aria-hidden': 'true' },
           e('span', { className: 'slide__idx' }, pad2(i + 1)),
           e('span', { className: 'slide__pip' }),
+          p.pathLabel ? e('span', { className: 'slide__path' }, p.pathLabel) : null,
           p.featured ? e('span', { className: 'slide__flag' }, 'flagship') : null
         ),
         e('span', { className: 'slide__name' }, p.name || id),
         e('span', { className: 'slide__tag' }, p.tagline || ''),
         e('span', { className: 'slide__updated' }, (p.language ? p.language + ' · ' : '') + 'Updated ' + formatDate(p.updatedAt)),
         e('span', { className: 'slide__chips' }, e('ul', { className: 'chips' }, chips)),
-        e('a', {
-          className: 'slide__open', href: pageUrl(id), tabIndex: active ? 0 : -1
-        }, 'View details ', e('span', { 'aria-hidden': 'true' }, '→'))
+        e('div', { className: 'slide__actions' },
+          e('a', {
+            className: 'slide__repo', href: p.url, target: '_blank', rel: 'noopener',
+            tabIndex: active ? 0 : -1
+          }, 'Open repository ', e('span', { 'aria-hidden': 'true' }, '↗')),
+          e('a', {
+            className: 'slide__details', href: pageUrl(id), tabIndex: active ? 0 : -1
+          }, 'Details ', e('span', { 'aria-hidden': 'true' }, '→'))
+        )
       );
     });
 
@@ -385,14 +392,19 @@
     var spot = e('div', { className: 'spot', id: 'spotlight', 'aria-live': 'polite' },
       e('p', { className: 'spot__idx' },
         'Node ' + pad2(displayIdx + 1) + ' / ' + pad2(SLOTTED.length),
+        p0.pathLabel ? e('span', { className: 'spot__path' }, p0.pathLabel) : null,
         p0.featured ? e('span', { className: 'spot__flag' }, 'flagship') : null),
       e('h3', { className: 'spot__name' }, p0.name || displayId),
       e('p', { className: 'spot__tag' }, p0.tagline || ''),
       e('p', { className: 'spot__blurb' }, p0.blurb || ''),
       e('p', { className: 'spot__updated' }, 'Last updated ' + formatDate(p0.updatedAt)),
       e('ul', { className: 'chips spot__chips' }, spotChips),
-      e('a', { className: 'btn btn--primary spot__open', href: pageUrl(displayId) },
-        'View project details ', e('span', { 'aria-hidden': 'true' }, '→'))
+      e('div', { className: 'spot__actions' },
+        e('a', { className: 'btn btn--primary spot__repo', href: p0.url, target: '_blank', rel: 'noopener' },
+          'Open repository ', e('span', { 'aria-hidden': 'true' }, '↗')),
+        e('a', { className: 'btn btn--ghost spot__details', href: pageUrl(displayId) },
+          'Project details ', e('span', { 'aria-hidden': 'true' }, '→'))
+      )
     );
 
     var index = e('ul', { className: 'sidx', 'aria-label': 'All projects' },
@@ -414,6 +426,7 @@
           },
             e('span', { className: 'sidx__idx', 'aria-hidden': 'true' }, pad2(i + 1)),
             e('span', { className: 'sidx__name', 'aria-hidden': 'true' }, p.name || id),
+            p.pathLabel ? e('span', { className: 'sidx__path', 'aria-hidden': 'true' }, p.pathLabel) : null,
             p.featured ? e('span', { className: 'sidx__flag', 'aria-hidden': 'true' }, 'flagship') : null
           ));
       }));

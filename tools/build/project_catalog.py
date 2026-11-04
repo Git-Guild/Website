@@ -73,6 +73,7 @@ def build_catalog(snapshot, curation, slot_count=12, recent_limit=6):
             "repo": repo["html_url"],
             "updatedAt": repo.get("updated_at"),
             "featured": bool(override.get("featured", False)),
+            "pathLabel": override.get("pathLabel"),
         }
         projects[project_id] = project
         order.append(project_id)
