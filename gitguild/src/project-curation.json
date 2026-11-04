@@ -1,0 +1,32 @@
+{
+  "collective": {
+    "name": "Git Guild",
+    "subtitle": "Learn, Build, Belong",
+    "lede": "A home for students to learn, build, and belong. Explore our projects, find a team, and ship real code together.",
+    "since": 2026,
+    "links": {
+      "github": "https://github.com/Git-Guild",
+      "mail": "mailto:hello@gitguild.dev",
+      "docs": "https://github.com/Git-Guild",
+      "goodFirstIssues": "https://github.com/issues?q=org%3AGit-Guild+is%3Aissue+is%3Aopen"
+    }
+  },
+  "projectOrder": [
+    "CPP-Starting-from-0",
+    "JAVA-Starting-from-0",
+    "Python-Starting-from-0",
+    "Git-Issue",
+    "GitDeep",
+    "Website",
+    ".github"
+  ],
+  "projects": {
+    "CPP-Starting-from-0": { "name": "C++ Starting from 0", "tagline": "Learn C++ from the ground up" },
+    "JAVA-Starting-from-0": { "name": "Java Starting from 0", "tagline": "Learn Java from absolute scratch" },
+    "Python-Starting-from-0": { "name": "Python Starting from 0", "tagline": "A progressive Python curriculum for beginners" },
+    "Git-Issue": { "name": "Git Issue", "tagline": "Find open-source issues worth contributing to", "featured": true },
+    "GitDeep": { "name": "GitDeep", "tagline": "Local AI feedback for GitHub profiles", "featured": true },
+    "Website": { "name": "Git Guild Website", "tagline": "The main website for Git Guild" },
+    ".github": { "name": "GitHub organization profile", "tagline": "Shared GitHub organization profile and defaults" }
+  }
+}

@@ -4,8 +4,8 @@ Main website for the org — a single self-contained page for the **Git Guild**
 developer collective (est. 2026, [github.com/Git-Guild](https://github.com/Git-Guild)),
 plus the tooling that builds and verifies it.
 
-Open [`gitguild/index.html`](gitguild/index.html) in a browser: no server, no
-build step, no network requests.
+Open [`gitguild/index.html`](gitguild/index.html) in a browser: no server or
+runtime network requests. The page embeds a checked-in repository snapshot.
 
 ## Repository layout
 
@@ -33,13 +33,16 @@ working directory.
 ## Commands
 
 ```bash
-python3 tools/build/build_site.py        # rebuild gitguild/index.html + SVGs
+python3 tools/build/build_site.py         # rebuild the static site
+python3 tools/sync/sync_github_projects.py # refresh the GitHub snapshot
 python3 tools/build/build_geometry.py    # regenerate src/emblem-geometry.js
 python3 tools/qa/qa_assert.py            # functional checks (needs playwright)
 python3 tools/qa/qa_shots.py             # screenshots -> build/qa/
 ```
 
-Full detail on editing projects, the emblem and accessibility lives in
+Project order and editorial overrides live in `gitguild/src/project-curation.json`.
+Refresh the committed snapshot explicitly when you want current organization
+data; routine builds remain offline. Full detail on the emblem and accessibility lives in
 [`gitguild/README.md`](gitguild/README.md).
 
 ## Documentation

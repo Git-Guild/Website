@@ -72,7 +72,9 @@ Dependencies: `numpy`, `Pillow`, `cairosvg`.
 ```
 
 Node ids `n0 … n11` are ordered top-down/clockwise and are referenced everywhere
-else (`projects.js` keys, `order`, `mergeTrain`), so they must not be renamed.
+else (repository snapshot and curation, `order`, `mergeTrain`), so they must
+not be renamed. Ring ids stay stable when repositories are reordered because
+the build maps the first twelve curated entries to the fixed geometry.
 
 ## Re-tracing (rare)
 

@@ -9,17 +9,21 @@ A physical ring in the traced mark (`n0`–`n11`).
 _Avoid_: branch, project, circle
 
 **Project**:
-One entry in `projects.js` with name, blurb, stack, and links.
-_Avoid_: node, page, repo
+One public, non-fork, non-archived GitGuild repository represented in the homepage catalog.
+_Avoid_: node, page
 
 **Slot**:
-The binding of one node to one project for display in the emblem; interim rule is `featured` / `order[:12]`.
+The position binding one ordered project to one of the mark's 12 nodes; the first 12 curated projects receive slots.
 _Avoid_: node, project
 
 **Project page**:
-One generated detail file per project with basics and Visit / Source / Docs links.
-_Avoid_: panel, modal, project
+One generated detail file per repository with its description, metadata, and a link to GitHub.
+_Avoid_: panel, modal
 
 **Work section**:
-The `#work` grid on the home page that lists all projects and links to their pages.
-_Avoid_: projects page, index, network
+The `#work` project browser on the home page, synced with the interactive emblem.
+_Avoid_: card grid
+
+**Repository snapshot**:
+The committed JSON record refreshed from GitHub and embedded into the static build.
+_Avoid_: live feed

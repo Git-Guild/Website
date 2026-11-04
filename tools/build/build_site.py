@@ -1,21 +1,126 @@
 #!/usr/bin/env python3
 """Assembles gitguild/index.html from gitguild/src/* sources."""
-import os, re, base64
+import os, re, base64, json, sys, html
+from datetime import datetime
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 SRC_DIR = os.path.join(ROOT, "gitguild", "src")
 ASSETS_DIR = os.path.join(ROOT, "gitguild", "assets")
 INDEX_HTML = os.path.join(ROOT, "gitguild", "index.html")
+SNAPSHOT_PATH = os.path.join(ROOT, "data", "github-projects.json")
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from project_catalog import build_catalog, slugify
 
 def read_file(path):
     with open(path, "r", encoding="utf-8") as f:
         return f.read()
 
+def json_file(path):
+    with open(path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+def safe_script_json(value):
+    return json.dumps(value, ensure_ascii=False, separators=(",", ":")) \
+        .replace("<", "\\u003c").replace(">", "\\u003e").replace("&", "\\u0026")
+
+def date_label(value):
+    if not value:
+        return "Not provided"
+    try:
+        return datetime.fromisoformat(value.replace("Z", "+00:00")).strftime("%d %b %Y")
+    except (AttributeError, ValueError):
+        return "Not provided"
+
+def render_project_content(project, index, total, previous, following):
+    esc = lambda value: html.escape(str(value or ""), quote=True)
+    topics = project.get("stack", [])[:6]
+    chips = "".join(f"<li>{esc(topic)}</li>" for topic in topics)
+    chips_markup = f'\n  <ul class="chips">{chips}</ul>' if chips else ""
+    language = project.get("language") or "Not specified"
+    return f"""<article class="project-page">
+  <a class="page__crumb" href="../index.html#work">← All projects</a>
+  <p class="page__pos">Project {index:02d} / {total:02d} · Git Guild repository</p>
+  <h1 class="page__title">{esc(project['name'])}</h1>
+  <p class="page__tagline">{esc(project.get('tagline'))}</p>
+  <p class="page__blurb">{esc(project.get('blurb'))}</p>{chips_markup}
+  <dl class="page__meta">
+    <div><dt>Primary language</dt><dd>{esc(language)}</dd></div>
+    <div><dt>Last updated</dt><dd>{esc(date_label(project.get('updatedAt')))}</dd></div>
+  </dl>
+  <div class="page__actions">
+    <a class="btn btn--primary" href="{esc(project['url'])}" target="_blank" rel="noopener">Open repository <span aria-hidden="true">↗</span></a>
+  </div>
+  <nav class="page__stepnav" aria-label="Project navigation">
+    <a class="page__step" href="../projects/{esc(previous['slug'])}.html">← {esc(previous['name'])}</a>
+    <a class="page__step" href="../projects/{esc(following['slug'])}.html">{esc(following['name'])} →</a>
+  </nav>
+</article>"""
+
+def write_project_pages(catalog, project_template, styles, mark_symbol, favicon_uri):
+    projects = catalog["projects"]
+    order = catalog["order"]
+    names = {}
+    slug_counts = {}
+    for project_id in order:
+        project = projects[project_id]
+        base = slugify(project["name"])
+        slug = base
+        suffix = 2
+        while slug in slug_counts:
+            slug = f"{base}-{suffix}"
+            suffix += 1
+        slug_counts[slug] = True
+        project["slug"] = slug
+        names[project_id] = project
+
+    project_dir = os.path.join(ROOT, "gitguild", "projects")
+    os.makedirs(project_dir, exist_ok=True)
+    expected = {project["slug"] + ".html" for project in names.values()}
+    manifest = os.path.join(project_dir, ".gitguild-generated-pages.json")
+    previous = set()
+    if os.path.exists(manifest):
+        try:
+            previous = set(json_file(manifest))
+        except (ValueError, TypeError):
+            previous = set()
+    else:
+        # This directory contains generated project pages in the documented pipeline.
+        previous = {name for name in os.listdir(project_dir) if name.endswith(".html")}
+    for stale in previous - expected:
+        path = os.path.join(project_dir, stale)
+        if os.path.isfile(path):
+            os.unlink(path)
+
+    total = len(order)
+    for index, project_id in enumerate(order):
+        project = names[project_id]
+        prev = names[order[(index - 1) % total]]
+        nxt = names[order[(index + 1) % total]]
+        page = project_template.replace("__TITLE__", html.escape(project["name"], quote=True))
+        page = page.replace("__DESCRIPTION__", html.escape(project["tagline"], quote=True))
+        page = page.replace("__FAVICON__", favicon_uri).replace("__STYLES__", styles)
+        page = page.replace("__MARK_SYMBOL__", mark_symbol)
+        page = page.replace("__HOME__", "../index.html")
+        page = page.replace("__DOCS__", html.escape(catalog["collective"]["links"]["docs"], quote=True))
+        page = page.replace("__GITHUB__", html.escape(catalog["collective"]["links"]["github"], quote=True))
+        page = page.replace("__MAIL__", html.escape(catalog["collective"]["links"]["mail"], quote=True))
+        page = page.replace("__GOODFIRST__", html.escape(catalog["collective"]["links"]["goodFirstIssues"], quote=True))
+        page = page.replace("__LEGALBASE__", "../legal/")
+        page = page.replace("__YEAR__", str(catalog["collective"]["since"]))
+        page = page.replace("__COUNT__", str(total))
+        page = page.replace("__CONTENT__", render_project_content(project, index + 1, total, prev, nxt))
+        with open(os.path.join(project_dir, project["slug"] + ".html"), "w", encoding="utf-8", newline="\n") as f:
+            f.write(page)
+    with open(manifest, "w", encoding="utf-8", newline="\n") as f:
+        json.dump(sorted(expected), f, indent=2)
+        f.write("\n")
+
 def main():
     template_path = os.path.join(SRC_DIR, "template.html")
     styles_path = os.path.join(SRC_DIR, "styles.css")
     geom_path = os.path.join(SRC_DIR, "emblem-geometry.js")
-    projects_path = os.path.join(SRC_DIR, "projects.js")
+    curation_path = os.path.join(SRC_DIR, "project-curation.json")
+    project_template_path = os.path.join(SRC_DIR, "project-template.html")
     app_path = os.path.join(SRC_DIR, "app.js")
     favicon_path = os.path.join(ASSETS_DIR, "favicon.svg")
     vendor_dir = os.path.join(SRC_DIR, "vendor")
@@ -28,7 +133,13 @@ def main():
     template = read_file(template_path)
     styles = read_file(styles_path) if os.path.exists(styles_path) else ""
     geom = read_file(geom_path) if os.path.exists(geom_path) else ""
-    projects = read_file(projects_path) if os.path.exists(projects_path) else ""
+    if not os.path.exists(SNAPSHOT_PATH):
+        raise FileNotFoundError(f"Missing project snapshot: {SNAPSHOT_PATH}; run tools/sync/sync_github_projects.py")
+    snapshot = json_file(SNAPSHOT_PATH)
+    curation = json_file(curation_path)
+    catalog = build_catalog(snapshot, curation)
+    projects = "window.GUILD = " + safe_script_json(catalog) + ";"
+    project_template = read_file(project_template_path)
     app = read_file(app_path) if os.path.exists(app_path) else ""
     react = read_file(react_path) if os.path.exists(react_path) else ""
     react_dom = read_file(react_dom_path) if os.path.exists(react_dom_path) else ""
@@ -43,7 +154,7 @@ def main():
 
     # Mark symbol
     mark_symbol = """<svg style="display:none" aria-hidden="true">
-  <symbol id="guild-mark" viewBox="465.5 81.8 476.0 476.0">
+  <symbol id="guild-mark" overflow="visible" viewBox="465.5 81.8 476.0 476.0">
     <g fill="none" stroke="#EBE8DB" stroke-width="9.6" stroke-linecap="round" stroke-linejoin="round">
       <path d="M703.8,209.7L703.6,483.9"/>
       <path d="M701.7,319.7L648.1,276.1"/>
@@ -85,32 +196,13 @@ def main():
   </symbol>
 </svg>"""
 
-    # ADR-0003 step 4: lede slot reads collective.lede (90-120 chars, placeholder).
-    mlede = re.search(r"lede:\s*'([^']+)'", projects)
-    lede = mlede.group(1) if mlede else ""
-    if not mlede:
-        print("WARNING: collective.lede not found in projects.js; using empty lede")
-    elif not (90 <= len(lede) <= 120):
-        print(f"WARNING: lede slot is {len(lede)} chars (want 90-120): {lede[:60]}...")
-    github_link = "https://github.com/Git-Guild"
-    mail_link = "mailto:hello@gitguild.dev"
-    quickstart_cmd = "npx @gitguild/cli open <project>"
-
-    # ADR-0003 step 1: the chat CTA reads collective.links.chat (single source).
-    m = re.search(r"chat:\s*'([^']+)'", projects)
-    if m:
-        chat_link = m.group(1)
-    else:
-        chat_link = "https://discord.com/"
-        print("WARNING: collective.links.chat not found in projects.js; using bare fallback")
-
-    # Placeholder-link guard (warn only; qa_assert.py fails until these are real).
-    if chat_link.rstrip("/") in ("https://discord.com", "https://discord.gg"):
-        print(f"WARNING: placeholder chat link ({chat_link}) TODO(chat-link) — replace with the real invite")
-    bare_projects = sorted(set(re.findall(r"(?:url|repo|docs):\s*'(https://github\.com/)'", projects)))
-    if bare_projects:
-        n = len(re.findall(r"(?:url|repo|docs):\s*'https://github\.com/'", projects))
-        print(f"WARNING: {n} bare project URL placeholder(s) ({', '.join(bare_projects)}) — replace with real links")
+    collective = catalog["collective"]
+    links = collective["links"]
+    lede = collective["lede"]
+    github_link = links["github"]
+    mail_link = links["mail"]
+    docs_link = links["docs"]
+    goodfirst_link = links["goodFirstIssues"]
 
     # Replace placeholders
     html = template
@@ -120,9 +212,10 @@ def main():
     html = html.replace("__VIEW__", "465.5 81.8 476.0 476.0")
     html = html.replace("__LEDE__", lede)
     html = html.replace("__GITHUB__", github_link)
-    html = html.replace("__CHAT__", chat_link)
+    html = html.replace("__DOCS__", docs_link)
+    html = html.replace("__GOODFIRST__", goodfirst_link)
     html = html.replace("__MAIL__", mail_link)
-    html = html.replace("__QUICKSTART__", quickstart_cmd)
+    html = html.replace("__ACTIVE_NODE_COUNT__", str(min(len(catalog["order"]), 12)))
     html = html.replace("__PROJECTS__", projects)
     html = html.replace("__GEOMETRY__", geom)
     html = html.replace("__REACT__", react)
@@ -131,6 +224,8 @@ def main():
 
     with open(INDEX_HTML, "w", encoding="utf-8", newline="\n") as f:
         f.write(html)
+
+    write_project_pages(catalog, project_template, styles, mark_symbol, favicon_uri)
 
     print(f"Successfully assembled {INDEX_HTML}")
 

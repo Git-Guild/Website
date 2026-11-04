@@ -39,8 +39,10 @@ PASS/FAIL on 22 checks, screenshots in build/qa/
 ```
 
 Only the first three steps are ever re-run, and only when the artwork changes.
-Everyday edits are to `gitguild/src/projects.js` followed by
-`python3 tools/build/build_site.py`.
+Edit `gitguild/src/project-curation.json` to change display order or editorial
+copy. Refresh repository data with `python3 tools/sync/sync_github_projects.py`,
+then run `python3 tools/build/build_site.py`. Routine builds use the committed
+snapshot and do not need network access.
 
 ## Repository layout
 
