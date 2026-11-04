@@ -4,15 +4,12 @@
 
   var root = document.documentElement;
   var themeKey = 'gitguild-theme';
-  var soundKey = 'gitguild-theme-sound';
   var media = window.matchMedia ? window.matchMedia('(prefers-color-scheme: light)') : null;
   var savedTheme = null;
-  var soundEnabled = false;
   var audioContext = null;
 
   try {
     savedTheme = localStorage.getItem(themeKey);
-    soundEnabled = localStorage.getItem(soundKey) === 'on';
   } catch (error) {}
 
   var followsSystem = savedTheme !== 'light' && savedTheme !== 'dark';
@@ -51,7 +48,7 @@
       filter.frequency.value = 1500;
       filter.Q.value = .8;
       gain.gain.setValueAtTime(.0001, audioContext.currentTime);
-      gain.gain.exponentialRampToValueAtTime(.045, audioContext.currentTime + .002);
+      gain.gain.exponentialRampToValueAtTime(.06, audioContext.currentTime + .002);
       gain.gain.exponentialRampToValueAtTime(.0001, audioContext.currentTime + .028);
       source.connect(filter);
       filter.connect(gain);
@@ -73,23 +70,14 @@
 
   function initializeControls() {
     var themeButton = document.querySelector('[data-theme-toggle]');
-    var soundButton = document.querySelector('[data-sound-toggle]');
-    if (!themeButton || !soundButton) return;
-
-    function updateSoundButton() {
-      soundButton.setAttribute('aria-pressed', soundEnabled ? 'true' : 'false');
-      var label = soundEnabled ? 'Mute theme click sound' : 'Enable theme click sound';
-      soundButton.setAttribute('aria-label', label);
-      soundButton.setAttribute('title', label);
-    }
-    updateSoundButton();
+    if (!themeButton) return;
 
     themeButton.addEventListener('click', function () {
       var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
       var rect = themeButton.getBoundingClientRect();
       root.style.setProperty('--theme-x', (rect.left + rect.width / 2) + 'px');
       root.style.setProperty('--theme-y', (rect.top + rect.height / 2) + 'px');
-      if (soundEnabled) playClick();
+      playClick();
       var reduced = media && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       var change = function () { applyTheme(next, true); };
       if (!reduced && document.startViewTransition) {
@@ -101,13 +89,6 @@
       } else {
         change();
       }
-    });
-
-    soundButton.addEventListener('click', function () {
-      soundEnabled = !soundEnabled;
-      try { localStorage.setItem(soundKey, soundEnabled ? 'on' : 'off'); } catch (error) {}
-      updateSoundButton();
-      if (soundEnabled) playClick();
     });
 
     if (media && media.addEventListener) {

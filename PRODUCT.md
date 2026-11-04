@@ -43,7 +43,7 @@ Name: Git Guild, developer collective, est. 2026. Voice: warm-direct — plain, 
 - Not configured: community chat invite. Do not link to a bare placeholder or present the GitHub organization as a chat service.
 - Repository descriptions and links come from GitHub; editorial overrides stay in the curation file.
 - The three language repositories explicitly described as starting-from-zero curricula are marked as learning tracks in the project browser; other repositories remain unlabelled unless maintainers curate them.
-- Visitors may follow their system color preference or choose a persisted light/dark theme. The click sound is separately opt-in; switching themes remains silent by default.
+- Visitors may follow their system color preference or choose a persisted light/dark theme. Each deliberate theme switch plays one brief click; page load stays silent.
 
 ## Product Principles
 

@@ -216,7 +216,7 @@ Rectangular instrument language: `14px` card radius (`8px` small, `22px` large),
 - Maintainer-curated learning tracks carry a small amber **Learning track** label in the same browser. The badge is attached to its repository row and card, not presented as a second project list.
 - **Ghost:** transparent, dimmed-bone text, hairline border; warms to an amber border on hover.
 - Theme controls sit beside GitHub in the nav. The first visit follows the device preference; a deliberate toggle persists the choice. Light mode uses paper, charcoal, and deeper amber roles so the emblem and small labels stay legible.
-- The theme change opens from the toggle with a circular wipe. Reduced-motion users get a direct change. A separate sound control enables a quiet, synthesized click; sound is off until someone opts in and never loads a remote asset.
+- The theme change opens from the toggle with a circular wipe. Reduced-motion users get a direct change. Each deliberate switch plays one quiet, synthesized click; page load stays silent and no remote asset is loaded.
 
 ### Slider cards
 - **Corner Style:** gently rounded rectangles (14px radius).
