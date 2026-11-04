@@ -11,6 +11,7 @@ The published site makes no network requests.
 | `gitguild/src/template.html` | Homepage shell and content slots |
 | `gitguild/src/project-template.html` | Generated repository detail page shell |
 | `gitguild/src/styles.css` | Shared styles, inlined in every page |
+| `gitguild/src/theme.js` | System-aware theme bootstrap, toggle, persistence, optional click sound |
 | `gitguild/src/project-curation.json` | Collective copy, preferred order, editorial overrides |
 | `data/github-projects.json` | Committed public repository snapshot |
 | `gitguild/src/emblem-geometry.js` | Generated emblem geometry and trace adjacency |

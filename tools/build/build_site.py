@@ -56,7 +56,7 @@ def render_project_content(project, index, total, previous, following):
   </nav>
 </article>"""
 
-def write_project_pages(catalog, project_template, styles, mark_symbol, favicon_uri):
+def write_project_pages(catalog, project_template, styles, mark_symbol, favicon_uri, theme_script):
     projects = catalog["projects"]
     order = catalog["order"]
     names = {}
@@ -99,6 +99,7 @@ def write_project_pages(catalog, project_template, styles, mark_symbol, favicon_
         page = project_template.replace("__TITLE__", html.escape(project["name"], quote=True))
         page = page.replace("__DESCRIPTION__", html.escape(project["tagline"], quote=True))
         page = page.replace("__FAVICON__", favicon_uri).replace("__STYLES__", styles)
+        page = page.replace("__THEME_SCRIPT__", theme_script)
         page = page.replace("__MARK_SYMBOL__", mark_symbol)
         page = page.replace("__HOME__", "../index.html")
         page = page.replace("__DOCS__", html.escape(catalog["collective"]["links"]["docs"], quote=True))
@@ -122,6 +123,7 @@ def main():
     curation_path = os.path.join(SRC_DIR, "project-curation.json")
     project_template_path = os.path.join(SRC_DIR, "project-template.html")
     app_path = os.path.join(SRC_DIR, "app.js")
+    theme_path = os.path.join(SRC_DIR, "theme.js")
     favicon_path = os.path.join(ASSETS_DIR, "favicon.svg")
     vendor_dir = os.path.join(SRC_DIR, "vendor")
     react_path = os.path.join(vendor_dir, "react.production.min.js")
@@ -141,6 +143,7 @@ def main():
     projects = "window.GUILD = " + safe_script_json(catalog) + ";"
     project_template = read_file(project_template_path)
     app = read_file(app_path) if os.path.exists(app_path) else ""
+    theme_script = read_file(theme_path) if os.path.exists(theme_path) else ""
     react = read_file(react_path) if os.path.exists(react_path) else ""
     react_dom = read_file(react_dom_path) if os.path.exists(react_dom_path) else ""
 
@@ -195,6 +198,8 @@ def main():
     <circle cx="703.4" cy="502.5" r="15.75" fill="none" stroke="#EBE8DB" stroke-width="9.5"/>
   </symbol>
 </svg>"""
+    mark_symbol = mark_symbol.replace('stroke="#EBE8DB"', 'stroke="var(--bone)"')
+    mark_symbol = mark_symbol.replace('stroke="#F4A330"', 'stroke="var(--amber)"')
 
     collective = catalog["collective"]
     links = collective["links"]
@@ -208,6 +213,7 @@ def main():
     html = template
     html = html.replace("__FAVICON__", favicon_uri)
     html = html.replace("__STYLES__", styles)
+    html = html.replace("__THEME_SCRIPT__", theme_script)
     html = html.replace("__MARK_SYMBOL__", mark_symbol)
     html = html.replace("__VIEW__", "465.5 81.8 476.0 476.0")
     html = html.replace("__LEDE__", lede)
@@ -225,7 +231,7 @@ def main():
     with open(INDEX_HTML, "w", encoding="utf-8", newline="\n") as f:
         f.write(html)
 
-    write_project_pages(catalog, project_template, styles, mark_symbol, favicon_uri)
+    write_project_pages(catalog, project_template, styles, mark_symbol, favicon_uri, theme_script)
 
     print(f"Successfully assembled {INDEX_HTML}")
 
