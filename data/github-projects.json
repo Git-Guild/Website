@@ -1,0 +1,131 @@
+{
+  "schema_version": 1,
+  "organization": "Git-Guild",
+  "fetched_at": "2026-11-04T18:09:25Z",
+  "repositories": [
+    {
+      "name": "CPP-Starting-from-0",
+      "full_name": "Git-Guild/CPP-Starting-from-0",
+      "html_url": "https://github.com/Git-Guild/CPP-Starting-from-0",
+      "description": "A hands-on learning repository for C++ fundamentals, object-oriented programming, and small practical projects. Designed for beginners who want to learn C++ by reading, modifying, and running real code examples.",
+      "language": "C++",
+      "topics": [
+        "cplusplus",
+        "cpp",
+        "oop",
+        "oops-in-cpp"
+      ],
+      "updated_at": "2026-11-04T17:29:44Z",
+      "archived": false,
+      "fork": false,
+      "private": false,
+      "visibility": "public"
+    },
+    {
+      "name": "JAVA-Starting-from-0",
+      "full_name": "Git-Guild/JAVA-Starting-from-0",
+      "html_url": "https://github.com/Git-Guild/JAVA-Starting-from-0",
+      "description": "A comprehensive, beginner-friendly repository for learning the Java programming language from absolute scratch.",
+      "language": "Java",
+      "topics": [
+        "beginner-code",
+        "beginner-friendly",
+        "java",
+        "starter"
+      ],
+      "updated_at": "2026-11-01T17:13:49Z",
+      "archived": false,
+      "fork": false,
+      "private": false,
+      "visibility": "public"
+    },
+    {
+      "name": "GitDeep",
+      "full_name": "Git-Guild/GitDeep",
+      "html_url": "https://github.com/Git-Guild/GitDeep",
+      "description": "Github account assessment via local ai models and local AI. This has Employer mode for employer to hire developers and Developer Mode where the AI gives tips to be better!",
+      "language": "TypeScript",
+      "topics": [
+        "ai-agents",
+        "beginner-friendly",
+        "claude",
+        "ecsoc26",
+        "gemini",
+        "github-actions",
+        "local-ai",
+        "ollama",
+        "open-source",
+        "typescript"
+      ],
+      "updated_at": "2026-10-30T10:32:20Z",
+      "archived": false,
+      "fork": false,
+      "private": false,
+      "visibility": "public"
+    },
+    {
+      "name": "Website",
+      "full_name": "Git-Guild/Website",
+      "html_url": "https://github.com/Git-Guild/Website",
+      "description": "Main website for the org",
+      "language": "HTML",
+      "topics": [],
+      "updated_at": "2026-10-08T20:05:54Z",
+      "archived": false,
+      "fork": false,
+      "private": false,
+      "visibility": "public"
+    },
+    {
+      "name": "Python-Starting-from-0",
+      "full_name": "Git-Guild/Python-Starting-from-0",
+      "html_url": "https://github.com/Git-Guild/Python-Starting-from-0",
+      "description": "A structured, beginner-friendly repository for learning Python from absolute scratch. This repo follows a progressive curriculum covering core Python concepts, from basic data types all the way through object-oriented programming and file handling, with hands-on projects and practice problems.",
+      "language": "Python",
+      "topics": [
+        "feecodecamp",
+        "python",
+        "python3"
+      ],
+      "updated_at": "2026-09-29T14:20:25Z",
+      "archived": false,
+      "fork": false,
+      "private": false,
+      "visibility": "public"
+    },
+    {
+      "name": "Git-Issue",
+      "full_name": "Git-Guild/Git-Issue",
+      "html_url": "https://github.com/Git-Guild/Git-Issue",
+      "description": "A platform that helps you find issues to contribute from one website because Github's own UI is very hard to navigate and lacks easy custom search!",
+      "language": "TypeScript",
+      "topics": [
+        "api",
+        "beginner-friendly",
+        "ci-cd",
+        "github-actions",
+        "issue-tracker",
+        "open-source",
+        "typescript"
+      ],
+      "updated_at": "2026-09-29T13:41:30Z",
+      "archived": false,
+      "fork": false,
+      "private": false,
+      "visibility": "public"
+    },
+    {
+      "name": ".github",
+      "full_name": "Git-Guild/.github",
+      "html_url": "https://github.com/Git-Guild/.github",
+      "description": "A student-first open-source collective. Learn, collaborate, and level up your dev skills by building real projects together!",
+      "language": null,
+      "topics": [],
+      "updated_at": "2026-09-29T13:39:52Z",
+      "archived": false,
+      "fork": false,
+      "private": false,
+      "visibility": "public"
+    }
+  ]
+}

@@ -39,6 +39,13 @@
   ORDER.forEach(function (id, i) { indexOf[id] = i; });
   function pad2(n) { return String(n).padStart(2, '0'); }
 
+  function formatDate(value) {
+    if (!value) return 'Date unavailable';
+    var date = new Date(value);
+    if (Number.isNaN(date.getTime())) return 'Date unavailable';
+    return new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(date);
+  }
+
   function tracesOf(id) {
     return ((GRID.adjacency || {})[id] || []).map(function (en) { return en[0]; });
   }
@@ -102,7 +109,7 @@
     try { window.location.href = url; } catch (err) { window.location = url; }
   }
 
-  /* ADR-0003 step 2: ring tap selects only — jump slider/spotlight, light ring.
+  /* ADR-0003 step 2: ring tap selects only: jump slider/spotlight, light ring.
      Never navigate on first tap; the explicit Open project action navigates. */
   function selectProject(id) {
     store.set({ selected: id });
@@ -188,9 +195,18 @@
       ),
       e('g', { className: 'layer layer--sparks' }),
       e('g', { className: 'layer layer--nodes', ref: svgRef },
-        SLOTTED.filter(function (id) { return byId[id]; }).map(function (id) {
-          var n = byId[id];
-          var p = PROJECTS[id] || {};
+        (GRID.nodes || []).map(function (n) {
+          var id = n.id;
+          var p = PROJECTS[id];
+          var ring = [
+            e('circle', { key: 'halo', className: 'node__halo', cx: n.x, cy: n.y, r: rMid }),
+            e('circle', { key: 'orbit', className: 'node__orbit', cx: n.x, cy: n.y, r: (GRID.rOut || 20.5) + 8 }),
+            e('circle', { key: 'ring', className: 'node__ring', cx: n.x, cy: n.y, r: rMid, 'stroke-width': rBand }),
+            e('circle', { key: 'hit', className: 'node__hit', cx: n.x, cy: n.y, r: 31 })
+          ];
+          if (!p || SLOTTED.indexOf(id) === -1) {
+            return e('g', { key: id, className: 'node node--inactive node--' + n.c, 'aria-hidden': 'true' }, ring);
+          }
           var isHot = s.hot === id;
           var isSel = s.selected === id;
           var near = active && (id === active || tracesOf(active).some(function (i) {
@@ -201,7 +217,7 @@
             key: id,
             className: 'node node--' + n.c + ' node--' + id + (isHot ? ' is-hot' : '') + (isSel ? ' is-selected' : '') + (near && id !== active ? ' is-near' : ''),
             'data-id': id, tabIndex: '0', role: 'button',
-            'aria-label': (p.name || id) + (p.tagline ? ' — ' + p.tagline : '') + ' (project ' + (indexOf[id] + 1) + ' of ' + ORDER.length + ')',
+            'aria-label': (p.name || id) + (p.tagline ? ': ' + p.tagline : '') + ' (project ' + (indexOf[id] + 1) + ' of ' + ORDER.length + ')',
             onMouseEnter: function () { store.set({ hot: id }); },
             onMouseLeave: function () { store.set({ hot: null }); },
             onFocus: function () { store.set({ hot: id }); },
@@ -223,12 +239,7 @@
                 if (elp) elp.focus();
               } else if (ev.key === 'Escape') { store.set({ hot: null }); }
             }
-          },
-            e('circle', { className: 'node__halo', cx: n.x, cy: n.y, r: rMid }),
-            e('circle', { className: 'node__orbit', cx: n.x, cy: n.y, r: (GRID.rOut || 20.5) + 8 }),
-            e('circle', { className: 'node__ring', cx: n.x, cy: n.y, r: rMid, 'stroke-width': rBand }),
-            e('circle', { className: 'node__hit', cx: n.x, cy: n.y, r: 31 })
-          );
+          }, ring);
         })
       )
     );
@@ -254,8 +265,8 @@
   }
 
   /* ADR-0003 step 3: slider as the sole browser. One state machine
-     (store.selected) drives both viewports — mobile peek carousel + counter +
-     dots, desktop spotlight + dense index — plus prev/next and arrow keys.
+     (store.selected) drives both viewports: mobile peek carousel + counter +
+     dots, desktop spotlight + dense index, plus prev/next and arrow keys.
      Ring tap jumps the slider; only the active slide is focusable. */
   function stepSelection(delta) {
     var cur = store.selected || SLOTTED[0];
@@ -356,12 +367,22 @@
         e('span', { className: 'slide__head', 'aria-hidden': 'true' },
           e('span', { className: 'slide__idx' }, pad2(i + 1)),
           e('span', { className: 'slide__pip' }),
+          p.pathLabel ? e('span', { className: 'slide__path' }, p.pathLabel) : null,
           p.featured ? e('span', { className: 'slide__flag' }, 'flagship') : null
         ),
         e('span', { className: 'slide__name' }, p.name || id),
         e('span', { className: 'slide__tag' }, p.tagline || ''),
+        e('span', { className: 'slide__updated' }, (p.language ? p.language + ' · ' : '') + 'Updated ' + formatDate(p.updatedAt)),
         e('span', { className: 'slide__chips' }, e('ul', { className: 'chips' }, chips)),
-        e('a', { className: 'slide__open', href: pageUrl(id) }, 'Open project ', e('span', { 'aria-hidden': 'true' }, '→'))
+        e('div', { className: 'slide__actions' },
+          e('a', {
+            className: 'slide__repo', href: p.url, target: '_blank', rel: 'noopener',
+            tabIndex: active ? 0 : -1
+          }, 'Open repository ', e('span', { 'aria-hidden': 'true' }, '↗')),
+          e('a', {
+            className: 'slide__details', href: pageUrl(id), tabIndex: active ? 0 : -1
+          }, 'Details ', e('span', { 'aria-hidden': 'true' }, '→'))
+        )
       );
     });
 
@@ -371,13 +392,19 @@
     var spot = e('div', { className: 'spot', id: 'spotlight', 'aria-live': 'polite' },
       e('p', { className: 'spot__idx' },
         'Node ' + pad2(displayIdx + 1) + ' / ' + pad2(SLOTTED.length),
+        p0.pathLabel ? e('span', { className: 'spot__path' }, p0.pathLabel) : null,
         p0.featured ? e('span', { className: 'spot__flag' }, 'flagship') : null),
       e('h3', { className: 'spot__name' }, p0.name || displayId),
       e('p', { className: 'spot__tag' }, p0.tagline || ''),
       e('p', { className: 'spot__blurb' }, p0.blurb || ''),
+      e('p', { className: 'spot__updated' }, 'Last updated ' + formatDate(p0.updatedAt)),
       e('ul', { className: 'chips spot__chips' }, spotChips),
-      e('a', { className: 'btn btn--primary spot__open', href: pageUrl(displayId) },
-        'Open project ', e('span', { 'aria-hidden': 'true' }, '→'))
+      e('div', { className: 'spot__actions' },
+        e('a', { className: 'btn btn--primary spot__repo', href: p0.url, target: '_blank', rel: 'noopener' },
+          'Open repository ', e('span', { 'aria-hidden': 'true' }, '↗')),
+        e('a', { className: 'btn btn--ghost spot__details', href: pageUrl(displayId) },
+          'Project details ', e('span', { 'aria-hidden': 'true' }, '→'))
+      )
     );
 
     var index = e('ul', { className: 'sidx', 'aria-label': 'All projects' },
@@ -399,6 +426,7 @@
           },
             e('span', { className: 'sidx__idx', 'aria-hidden': 'true' }, pad2(i + 1)),
             e('span', { className: 'sidx__name', 'aria-hidden': 'true' }, p.name || id),
+            p.pathLabel ? e('span', { className: 'sidx__path', 'aria-hidden': 'true' }, p.pathLabel) : null,
             p.featured ? e('span', { className: 'sidx__flag', 'aria-hidden': 'true' }, 'flagship') : null
           ));
       }));
@@ -457,14 +485,13 @@
 
   function Train() {
     var s = useStore();
-    var TRAIN = CFG.mergeTrain || ['n11', 'n9', 'n6', 'n1', 'n5', 'n0'];
-    var y = 96, x0 = 190, step = 164;
-    function go(id) { goToProject(id); }
+    var TRAIN = CFG.mergeTrain || [];
+    var y = 96, x0 = 190, step = TRAIN.length > 1 ? 820 / (TRAIN.length - 1) : 0;
     return e('g', null,
       e('path', { className: 'train__trunk', d: 'M64,' + y + 'H1144' }),
       e('path', { className: 'train__trunk', d: 'M1136,' + (y - 5) + 'l8,5l-8,5' }),
-      e('text', { className: 'train__cap', x: 60, y: y - 16, 'text-anchor': 'start' }, 'origin/main'),
-      e('text', { className: 'train__cap', x: 1148, y: y - 16, 'text-anchor': 'end', fill: 'var(--amber)' }, 'main'),
+      e('text', { className: 'train__cap', x: 60, y: y - 16, 'text-anchor': 'start' }, 'OLDER'),
+      e('text', { className: 'train__cap', x: 1148, y: y - 16, 'text-anchor': 'end', fill: 'var(--amber)' }, 'LATEST UPDATE'),
       TRAIN.map(function (id, i) {
         var x = x0 + i * step;
         var n = byId[id] || { c: 'o' };
@@ -473,22 +500,23 @@
         return e('g', {
           key: id + i, className: 'commit' + (hot ? ' is-hot' : ''),
           'data-id': id, tabIndex: '0', role: 'button',
-          'aria-label': 'Open ' + (p.name || id) + ' (merged to main)',
+          'aria-label': 'View ' + (p.name || id) + ', last updated ' + formatDate(p.updatedAt),
           onMouseEnter: function () { store.set({ hot: id }); },
           onMouseLeave: function () { store.set({ hot: null }); },
           onFocus: function () { store.set({ hot: id }); },
           onBlur: function () { store.set({ hot: null }); },
-          onClick: function () { go(id); },
+          onClick: function () { selectProject(id); document.getElementById('work').scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' }); },
           onKeyDown: function (ev) {
-            if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); go(id); }
+            if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); selectProject(id); document.getElementById('work').scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' }); }
           }
         },
           e('rect', { x: x - 78, y: y - 76, width: 156, height: 168, fill: 'transparent' }),
           e('path', { className: 'train__branch', d: 'M' + (x - 92) + ',' + (y - 62) + 'C' + (x - 54) + ',' + (y - 62) + ' ' + (x - 40) + ',' + y + ' ' + (x - 9) + ',' + y }),
           e('circle', { className: 'train__tip', cx: x - 92, cy: y - 62, r: 4.5 }),
           e('circle', { className: 'train__commit tc--' + n.c, cx: x, cy: y, r: 9 }),
-          e('text', { className: 'train__idx', x: x, y: y + 40, 'text-anchor': 'middle' }, '#' + pad2(indexOf[id] + 1)),
-          e('text', { className: 'train__label', x: x, y: y + 62, 'text-anchor': 'middle' }, (p.name || id).toUpperCase())
+          e('text', { className: 'train__idx', x: x, y: y + 40, 'text-anchor': 'middle' }, formatDate(p.updatedAt)),
+          e('text', { className: 'train__label', x: x, y: y + 62, 'text-anchor': 'middle' },
+            (p.name || id).length > 16 ? (p.name || id).slice(0, 15).toUpperCase() + '…' : (p.name || id).toUpperCase())
         );
       })
     );
@@ -509,15 +537,15 @@
     stage.appendChild(chip);
     function workInView() {
       var r = work.getBoundingClientRect();
-      return r.top < window.innerHeight && r.bottom > 0;
+      return r.top < window.innerHeight * 0.45 && r.bottom > 0;
     }
     function render() {
       var id = store.selected;
       var p = id ? PROJECTS[id] : null;
       if (!id || !p) { chip.hidden = true; return; }
-      var label = pad2(indexOf[id] + 1) + '/' + pad2(ORDER.length) + ' ' + (p.name || id);
+      var label = (p.name || id) + ' · ' + pad2(indexOf[id] + 1) + '/' + pad2(ORDER.length);
       chip.textContent = label + ' · View ↓';
-      chip.setAttribute('aria-label', label + ' — view in the work section below');
+      chip.setAttribute('aria-label', label + ': view in the work section below');
       chip.hidden = workInView();
     }
     store.subscribe(render);
@@ -557,7 +585,7 @@
     if (tip) {
       var renderTip = function () {
         var id = store.hot;
-        if (!id || !byId[id]) { tip.classList.remove('is-on'); tip.innerHTML = ''; return; }
+        if (!id || !byId[id]) { tip.classList.remove('is-on'); tip.setAttribute('aria-hidden', 'true'); tip.innerHTML = ''; return; }
         var p = PROJECTS[id] || {};
         var v = GRID.view;
         var n = byId[id];
@@ -569,6 +597,7 @@
           '<span class="tip__cta">View ↓</span>';
         tip.classList.toggle('tip--below', py < 26);
         tip.classList.add('is-on');
+        tip.setAttribute('aria-hidden', 'false');
         positionTip(id);
       };
       store.subscribe(renderTip);
@@ -611,6 +640,7 @@
       el.textContent = CFG.collective.since;
     });
     document.querySelectorAll('[data-bind="count"]').forEach(function (el) { el.textContent = ORDER.length; });
+    document.querySelectorAll('[data-bind="nodecount"]').forEach(function (el) { el.textContent = SLOTTED.length; });
     var stacks = {};
     ORDER.forEach(function (id) { ((PROJECTS[id] || {}).stack || []).forEach(function (s) { stacks[s] = 1; }); });
     document.querySelectorAll('[data-bind="techcount"]').forEach(function (el) { el.textContent = Object.keys(stacks).length + '+'; });
@@ -646,13 +676,25 @@
     if (copy) {
       copy.addEventListener('click', function () {
         var text = copy.dataset.copy;
-        var done = function () {
+        if (!text) return;
+        var done = function (ok) {
           copy.classList.add('is-done');
           var lbl = copy.querySelector('.copy__label');
-          if (lbl) { var old = lbl.textContent; lbl.textContent = 'copied'; setTimeout(function () { lbl.textContent = old; copy.classList.remove('is-done'); }, 1600); }
+          if (lbl) { var old = 'copy'; lbl.textContent = ok === false ? 'select manually' : 'copied'; setTimeout(function () { lbl.textContent = old; copy.classList.remove('is-done'); }, 1600); }
         };
-        if (navigator.clipboard) navigator.clipboard.writeText(text).then(done, done);
-        else done();
+        var legacy = function () {
+          try {
+            var ta = document.createElement('textarea');
+            ta.value = text; ta.setAttribute('readonly', '');
+            ta.style.position = 'absolute'; ta.style.opacity = '0';
+            document.body.appendChild(ta); ta.select();
+            if (ta.setSelectionRange) ta.setSelectionRange(0, ta.value.length);
+            var ok = document.execCommand('copy');
+            document.body.removeChild(ta); done(!!ok);
+          } catch (e) { done(false); }
+        };
+        if (navigator.clipboard && window.isSecureContext !== false) navigator.clipboard.writeText(text).then(function () { done(true); }, legacy);
+        else legacy();
       });
     }
 
